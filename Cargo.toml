@@ -2,7 +2,7 @@
 
 name = "silva"
 version = "0.0.1"
-authors = [ "Stephen M. Williams <steve.williams7@ntlworld.com>" ]
+authors = [ "Stephen M. Williams <zen323167@zen.co.uk>" ]
 
 [profile.release]
 
@@ -19,6 +19,6 @@ name = "mysilva_bin"
 
 [dependencies]
 
-chrono="0.2"
+chrono="*"
 bit-vec="*"
 itertools="*"

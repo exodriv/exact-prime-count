@@ -6,8 +6,7 @@ use std::io;
 use bit_vec::BitVec ;
 use mysilva::* ;
 use chrono::* ;
-use itertools::Itertools ;
-use std::thread ;
+// use itertools::Itertools ;
 const SIGNBIT : i32 = 1<<31;
 const SUBSTITUTE : usize = 2 ;
 fn main() {
@@ -17,7 +16,7 @@ let mut exponent = String::new()  ;
 io::stdin().read_line(&mut exponent).ok().expect("Failed to read line");
 let exponent : u32 = exponent.trim().parse().ok().expect("Please enter an integer") ;
 match exponent {
-	1...17 => (), 
+	1..=17 => (), 
 	_ => {println!("Not a valid input: integer between 1 and 17"); return ;}, }
 let start: DateTime<Local> = Local::now();
 println!("{:?}",start.format("%a %e %b %T ").to_string()) ;
@@ -57,8 +56,8 @@ let mut d2 : Vec<usize> = vec![0; a - 1];
 let mut offsets : Vec<usize> = vec![0; a + 1];
 let mut block : BitVec = BitVec::from_elem(n + 3,false);
 let mut switch : Vec<bool> = vec![false; a + 1];
-(0..astar).foreach(|index| switch[index] = true);
-(1..num_intervals).foreach(|i|  interval_boundaries[i] = 1 + (i * interval_length) ) ;
+(0..astar).for_each(|index| switch[index] = true);
+(1..num_intervals).for_each(|i|  interval_boundaries[i] = 1 + (i * interval_length) ) ;
 interval_boundaries[num_intervals] = z;
 let mut  phi2 = (a as i64* (a as i64 - 1)) >> 1;
 let mut u = match exponent % 2 {
@@ -69,14 +68,14 @@ let mut v = a;
 let mut w = u + 1;
 let mut  count = a as i64 - 1;
 count += ordinary_leaves(n,&mu,m);
-(0..SUBSTITUTE+1).foreach(|index| 
+(0..SUBSTITUTE+1).for_each(|index| 
  	count -= special_leaves_type_1_substitute(index,&primes,n,&mu,m) )    ;
-(astar..a - 1).foreach(|index| {
+(astar..a - 1).for_each(|index| {
     special_leaves_type_2_initialize(index,primes[index + 1],m,&mut t,n,&pi,a,&mut d2,&mut count) ;
     special_leaves_type_2(index,0,&mut d2,m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&initial,&pi); } ) ;
-initial.iter_mut().into_rc().enumerate().foreach( |(i,e)| {*e = (i as i32 +1) & !(i as i32) } ) ;
+initial.iter_mut()/*.into()*/.enumerate().for_each( |(i,e)| {*e = (i as i32 +1) & !(i as i32) } ) ;
 // start of main loop
-'bar : for interval in 0..num_intervals { let mut counter = &mut initial.clone() ;
+for interval in 0..num_intervals { let mut counter = &mut initial.clone() ;
 for index in 1..a+1 {   interval_clear(index,&mut offsets,&mut counter,interval_length,primes[index]) ;
 //		thread::spawn(|index| {
 if index < astar && index > SUBSTITUTE { special_leaves_type_1(index,interval,&mut m1,n,primes[index + 1],m,&interval_boundaries,&mu,&mut count,&phi,&counter) ; } 

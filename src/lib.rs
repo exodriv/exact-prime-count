@@ -84,8 +84,8 @@ pi[i as usize]=pix;
  
 pub fn ordinary_leaves(n : usize, mu : &[isize], m : u64) -> i64 {
 let mut result = 0 ;
-let mut it = (1..n+1).filter(|&i| i % 4 != 0) ;
-it.foreach(|i| {if i % 2 == 1 
+let it = (1..n+1).filter(|&i| i % 4 != 0) ;
+it.for_each(|i| {if i % 2 == 1 
 		{let term = (mu[(i+1) >> 1]).signum() as i64;
   	result +=  term * (m as i64 / i as i64) ;}
 		 else { let term = (mu[((i >> 1)  + 1) >> 1]).signum() as i64 ;
@@ -112,7 +112,7 @@ result
  
 pub fn special_leaves_type_1_substitute(b : usize, primes : &[usize], n : usize, mu : &[isize], m : u64) -> i64 {
 let pp = primes[b + 1]    ; let mut acc = 0 ;
-let mut j = cmp::max((n / pp) , pp ) as usize + 1 ;
+let mut j = cmp::max(n / pp , pp ) as usize + 1 ;
 if j % 2 == 0 { j += 1;} 
 let mut i = j ; while i <= n {
 //for i in (j..(n+1)).step_by(2) {
@@ -134,8 +134,8 @@ if m1[b] % 2 == 0 { m1[b] -= 1;}
 let criterion = n / pp ; 
 while m1[b] > criterion { let y  = (m / (m1[b] as u64 * pp as u64 )) as usize  ; //print!("y = {} ",y) ;
    if y > interval_boundaries[interval + 1] - 2 { return ;} 
-   let   muvalue = mu[((m1[b]+1) >> 1)]; 
-   if muvalue.abs() > pp as isize { *count -=  muvalue.signum() as i64 * (phi[b] as i64 + cnt_query((y + 1 - interval_boundaries[interval]), counter) as i64);} 
+   let   muvalue = mu[(m1[b]+1) >> 1]; 
+   if muvalue.abs() > pp as isize { *count -=  muvalue.signum() as i64 * (phi[b] as i64 + cnt_query(y + 1 - interval_boundaries[interval], counter) as i64);} 
    m1[b] -= 2 ;    }
   } 
  	 
@@ -154,7 +154,7 @@ d2[index] = t[index] - 1 ;
 #[inline]
 pub fn hard(index :  usize , interval : usize, y : usize, interval_boundaries : &[usize], count : &mut i64, counter : &[i32], d2 : &mut [usize]) -> bool {
     if y + 1 >= interval_boundaries[interval+1] {return true ; }
-    *count+= cnt_query((y + 1 - interval_boundaries[interval]),counter) as i64;
+    *count+= cnt_query(y + 1 - interval_boundaries[interval],counter) as i64;
     d2[index] -= 1;
    false
     }
@@ -166,7 +166,7 @@ pub fn easy_sparse(index :  usize , interval : usize, y : usize, n : usize, tt :
          if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2); }
       }
       else {
-         let l = pi[((y + 1) >> 1)] - index + 1;
+         let l = pi[(y + 1) >> 1] - index + 1;
          *count += l as i64;
          d2[index] -= 1;
       }
@@ -178,7 +178,7 @@ pub fn easy_clustered(index :  usize , interval : usize, y : usize, n : usize, t
 	 count : &mut i64, counter : &[i32], d2 : &mut [usize], m : u64, pi : &[usize], p : &[usize] ) -> bool  {
      if y >= n {if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2); } }
      else  {
-     let   l = pi[((y + 1) >> 1)] - index + 1;
+     let   l = pi[(y + 1) >> 1] - index + 1;
      let  term = m / (p[index + 1] as u64 * p[index + l] as u64);
      let  dprime = pi[((term + 1) >> 1) as usize];
      if p[dprime + 1] <= int_sqrt((m / p[index + 1] as u64) as usize) || dprime <= index  {
@@ -228,7 +228,7 @@ loop {
    		sieve2(*w,*u+1,p,block) ; } 
     if !block[*u - *w + 1] { let y  = (m / (*u as u64)) as usize;
     if y +1 >= interval_boundaries[interval + 1] { return p2primes; }  
-    *phi2 += (cnt_query((y + 1 - interval_boundaries[interval]), counter) as usize + a) as i64 - 1;
+    *phi2 += (cnt_query(y + 1 - interval_boundaries[interval], counter) as usize + a) as i64 - 1;
     p2primes += 1; 
     *v += 1; }
     *u -= 2; }  
