@@ -27,25 +27,26 @@ acc as u32
 }
 
 #[inline]
-pub fn cnt_update(mut pos : usize, counter : &mut[i32], interval_length : usize ) {
+pub fn cnt_update(mut pos : usize, counter : &mut[i32], last : usize ) {
     counter[pos] |= SIGNBIT;
-    loop {
+    while pos <= last {
       counter[pos] -= 1;
       pos |= pos + 1; 
-      if pos >=interval_length {break;}
+      // if pos > last {break;}
     }
     }
 
 #[inline]
-pub fn interval_clear(index : usize , offsets : &mut[usize],  counter : &mut[i32], interval_length : usize, prime : usize) {
+pub fn interval_clear(mut j: usize,  counter : &mut[i32], interval_length : usize, prime : usize) -> usize {
 //   (offsets[index]..interval_length).step(prime).foreach(|j| {    	if counter[j] > 0 { cnt_update( j, counter, interval_length ) ; } }) ; much slower
   
-   let mut j  = offsets[index] ;
+   
+   let last = interval_length - 1;
    while j < interval_length {
-   	if counter[j] > 0 { cnt_update( j, counter, interval_length ) ; }
+   	if counter[j] > 0 { cnt_update( j, counter, last) ; }
    	j += prime ;
    	}
-   offsets[index] = modneg( offsets[index] as i64 - interval_length as i64 , prime );
+  modneg( j as i64 - interval_length as i64 , prime )
    }
 
  pub fn initialize_arrays(ll : usize, mu : &mut[isize], pi : &mut [usize],  primes : &mut [usize]) -> usize {
@@ -162,22 +163,23 @@ pub fn hard(index :  usize , interval : usize, y : usize, interval_boundaries : 
  #[inline]  
 pub fn easy_sparse(index :  usize , interval : usize, y : usize, n : usize, tt : &mut[u8], switch : &mut [bool],interval_boundaries : &[usize],
 	 count : &mut i64, counter : &[i32], d2 : &mut [usize], pi : &[usize] ) -> bool  {
-      if y >= n {
-         if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2); }
-      }
-      else {
+     
+      if y < n {
          let l = pi[(y + 1) >> 1] - index + 1;
          *count += l as i64;
          d2[index] -= 1;
       }
+      else{
+         if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2); }
+       }
     false
     }
 	 
 #[inline]   
 pub fn easy_clustered(index :  usize , interval : usize, y : usize, n : usize, tt: &mut[u8], switch : &mut [bool], interval_boundaries : &[usize],
 	 count : &mut i64, counter : &[i32], d2 : &mut [usize], m : u64, pi : &[usize], p : &[usize] ) -> bool  {
-     if y >= n {if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2); } }
-     else  {
+      
+     if y < n  {
      let   l = pi[(y + 1) >> 1] - index + 1;
      let  term = m / (p[index + 1] as u64 * p[index + l] as u64);
      let  dprime = pi[((term + 1) >> 1) as usize];
@@ -188,6 +190,7 @@ pub fn easy_clustered(index :  usize , interval : usize, y : usize, n : usize, t
       else { *count +=  (l as u32 * (d2[index] - dprime) as u32) as i64 ;
       d2[index] = dprime; }
     }
+    else {if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2); } }
     false
       } 
     
