@@ -153,31 +153,31 @@ d2[index] = t[index] - 1 ;
 }
 
 #[inline]
-pub fn hard(index :  usize , interval : usize, y : usize, interval_boundaries : &[usize], count : &mut i64, counter : &[i32], d2 : &mut [usize]) -> bool {
+pub fn hard(_index :  usize , interval : usize, y : usize, interval_boundaries : &[usize], count : &mut i64, counter : &[i32], d2_index: &mut usize) -> bool {
     if y + 1 >= interval_boundaries[interval+1] {return true ; }
     *count+= cnt_query(y + 1 - interval_boundaries[interval],counter) as i64;
-    d2[index] -= 1;
+    *d2_index -= 1;
    false
     }
    
  #[inline]  
 pub fn easy_sparse(index :  usize , interval : usize, y : usize, n : usize, tt : &mut[u8], switch : &mut [bool],interval_boundaries : &[usize],
-	 count : &mut i64, counter : &[i32], d2 : &mut [usize], pi : &[usize] ) -> bool  {
+	 count : &mut i64, counter : &[i32], d2_index : &mut usize, pi : &[usize] ) -> bool  {
      
       if y < n {
          let l = pi[(y + 1) >> 1] - index + 1;
          *count += l as i64;
-         d2[index] -= 1;
+         *d2_index -= 1;
       }
       else{
-         if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2); }
+         if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2_index); }
        }
     false
     }
 	 
 #[inline]   
 pub fn easy_clustered(index :  usize , interval : usize, y : usize, n : usize, tt: &mut[u8], switch : &mut [bool], interval_boundaries : &[usize],
-	 count : &mut i64, counter : &[i32], d2 : &mut [usize], m : u64, pi : &[usize], p : &[usize] ) -> bool  {
+	 count : &mut i64, counter : &[i32], d2_index : &mut usize, m : u64, pi : &[usize], p : &[usize] ) -> bool  {
       
      if y < n  {
      let   l = pi[(y + 1) >> 1] - index + 1;
@@ -186,25 +186,26 @@ pub fn easy_clustered(index :  usize , interval : usize, y : usize, n : usize, t
      if p[dprime + 1] <= int_sqrt((m / p[index + 1] as u64) as usize) || dprime <= index  {
          tt[index] = 1;
          *count += l as i64;
-         d2[index] -= 1 ; }
-      else { *count +=  (l as u32 * (d2[index] - dprime) as u32) as i64 ;
-      d2[index] = dprime; }
+         *d2_index -= 1 ; }
+      else { *count +=  (l as u32 * (*d2_index - dprime) as u32) as i64 ;
+      *d2_index = dprime; }
     }
-    else {if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2); } }
+    else {if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2_index); } }
     false
       } 
     
   #[inline]  
-    pub fn special_leaves_type_2(index: usize, interval : usize, d2 : &mut[usize], m : u64, p : &[usize], tt : &mut[u8],
+    pub fn special_leaves_type_2(index: usize, interval : usize, d2_index : &mut usize, m : u64, p : &[usize], tt : &mut[u8],
     	 n : usize, switch : &mut[bool], interval_boundaries : &[usize], count : &mut i64, counter : &[i32], pi : &[usize] )  -> u32 {
     let mut s2bprimes= 0;
-     loop {  if d2[index] == index + 1 {return s2bprimes; }
-      else {  let y = (m / (p[index + 1] as u64 * p[d2[index]] as u64)) as usize;
+         while index + 1 < *d2_index// {return s2bprimes; }
+      {  let y = (m / (p[index + 1] as u64 * p[*d2_index] as u64)) as usize;
        match tt[index] {
-          0 => { if easy_clustered(index, interval, y, n, tt, switch, interval_boundaries, count, counter, d2, m, pi, p) { return s2bprimes;} continue ; } ,
-          1 => { if easy_sparse(index,interval,y,n,tt,switch,interval_boundaries,count,counter,d2,pi) { return s2bprimes; }  continue ; } ,
-          _ => { if (interval > 0 || counter[1] > 0) &&  hard(index,interval,y,interval_boundaries,count,counter,d2)  { return s2bprimes;} s2bprimes += 1 ; continue ; } ,
-}}}
+          0 => { if easy_clustered(index, interval, y, n, tt, switch, interval_boundaries, count, counter, d2_index, m, pi, p) { break;} /*continue ;*/ } ,
+          1 => { if easy_sparse(index,interval,y,n,tt,switch,interval_boundaries,count,counter,d2_index,pi) { break; }   } ,
+          _ => { if (interval > 0 || counter[1] > 0) &&  hard(index,interval,y,interval_boundaries,count,counter,d2_index)  { break;} else{s2bprimes += 1 ;} } ,
+     }}
+s2bprimes
      } 
 
   #[inline]     

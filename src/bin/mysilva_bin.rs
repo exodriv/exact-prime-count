@@ -73,7 +73,7 @@ count += ordinary_leaves(n,&mu,m);
  	count -= special_leaves_type_1_substitute(index,&primes,n,&mu,m) )    ;
 (astar..a - 1).for_each(|index| {
     special_leaves_type_2_initialize(index,primes[index + 1],m,&mut t,n,&pi,a,&mut d2,&mut count) ;
-    special_leaves_type_2(index,0,&mut d2,m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&initial,&pi); } ) ;
+    special_leaves_type_2(index,0,&mut d2[index],m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&initial,&pi); } ) ;
 initial.iter_mut()/*.into()*/.enumerate().for_each( |(i,e)| {*e = (i as i32 +1) & !(i as i32) } ) ;
 // start of main loop
 for interval in 0..num_intervals { let mut counter = &mut initial.clone() ;
@@ -83,7 +83,7 @@ for  index in 2..a+1 {  offsets[index] = interval_clear(offsets[index],&mut coun
 if index < astar { special_leaves_type_1(index,interval,&mut m1,n,primes[index + 1],m,&interval_boundaries,&mu,&mut count,&phi,&counter) ; } 
 //});
 else if /*index >= astar &&*/ index < a-1 // && switch[index] 
-{  	let	s2bprimes = special_leaves_type_2(index,interval,&mut d2,m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&counter,&pi);
+{  	let	s2bprimes = special_leaves_type_2(index,interval,&mut d2[index],m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&counter,&pi);
  		count += (s2bprimes as u64 * phi[index]) as i64 ;    }
 // else if !switch[index] && index < a-1 { continue;}
 else if index == a { let p2primes = p2(interval,&mut u,&mut v,n,&mut w,&mut block,&primes,m,&interval_boundaries,&mut phi2,&counter,a)  ;
