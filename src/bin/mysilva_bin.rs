@@ -51,7 +51,7 @@ let mut interval_boundaries : Vec<usize> = vec![1; num_intervals + 1];
 let mut initial : Vec<i32> = vec![0; interval_length];
 let mut m1 : Vec<usize> = vec![n; astar ];
 let mut phi : Vec<u64> = vec![0; a + 1];
-let mut t : Vec<usize> = vec![0; a - 1];
+// let mut t : Vec<usize> = vec![0; a - 1];
 let mut tt : Vec<u8> = vec![0; a - 1];
 let mut d2 : Vec<usize> = vec![0; a - 1];
 let mut offsets : Vec<usize> = vec![0; a + 1];
@@ -72,7 +72,18 @@ count += ordinary_leaves(n,&mu,m);
 (0..2).for_each(|index| 
  	count -= special_leaves_type_1_substitute(index,&primes,n,&mu,m) )    ;
 (astar..a - 1).for_each(|index| {
-    special_leaves_type_2_initialize(index,primes[index + 1],m,&mut t,n,&pi,a,&mut d2,&mut count) ;
+    {
+        let pb = primes[index + 1];
+        let count: &mut i64 = &mut count; 
+    let    term = (m / (pb as u64 * pb as u64)) as usize;
+   d2[index] = match  term {
+       term if term <= pb =>  index + 1,
+       term if term < n =>  pi[(term + 1) >> 1] ,
+       _ => a ,
+           };
+    // d2[index] = t[index] - 1 ;
+    *count += (a - d2[index]) as i64 ;
+    } ;
     special_leaves_type_2(index,0,&mut d2[index],m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&initial,&pi); } ) ;
 initial.iter_mut()/*.into()*/.enumerate().for_each( |(i,e)| {*e = (i as i32 +1) & !(i as i32) } ) ;
 // start of main loop

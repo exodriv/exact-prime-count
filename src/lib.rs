@@ -140,17 +140,17 @@ while m1[b] > criterion { let y  = (m / (m1[b] as u64 * pp as u64 )) as usize  ;
    m1[b] -= 2 ;    }
   } 
  	 
- #[inline]
-pub fn special_leaves_type_2_initialize( index : usize, pb : usize, m : u64, t : &mut[usize], n : usize, pi : &[usize], a : usize, d2 : &mut[usize], count : &mut i64 )  { 
-let    term = (m / (pb as u64 * pb as u64)) as usize;
-t[index] = match  term {
-   term if term <= pb =>  index + 2,
-   term if term < n =>  pi[(term + 1) >> 1] + 1,
-   _ => a + 1,
-       };
-d2[index] = t[index] - 1 ;
-*count += (a - d2[index]) as i64 ;
-}
+//  #[inline]
+// pub fn special_leaves_type_2_initialize( index : usize, pb : usize, m : u64, t : &mut[usize], n : usize, pi : &[usize], a : usize, d2 : &mut[usize], count : &mut i64 )  { 
+// let    term = (m / (pb as u64 * pb as u64)) as usize;
+// t[index] = match  term {
+//    term if term <= pb =>  index + 2,
+//    term if term < n =>  pi[(term + 1) >> 1] + 1,
+//    _ => a + 1,
+//        };
+// d2[index] = t[index] - 1 ;
+// *count += (a - d2[index]) as i64 ;
+// }
 
 #[inline]
 pub fn hard( interval : usize, y : usize, interval_boundaries : &[usize], count : &mut i64, counter : &[i32], d2_index: &mut usize) -> bool {
