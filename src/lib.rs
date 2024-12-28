@@ -153,7 +153,7 @@ d2[index] = t[index] - 1 ;
 }
 
 #[inline]
-pub fn hard(_index :  usize , interval : usize, y : usize, interval_boundaries : &[usize], count : &mut i64, counter : &[i32], d2_index: &mut usize) -> bool {
+pub fn hard( interval : usize, y : usize, interval_boundaries : &[usize], count : &mut i64, counter : &[i32], d2_index: &mut usize) -> bool {
     if y + 1 >= interval_boundaries[interval+1] {return true ; }
     *count+= cnt_query(y + 1 - interval_boundaries[interval],counter) as i64;
     *d2_index -= 1;
@@ -170,7 +170,7 @@ pub fn easy_sparse(index :  usize , interval : usize, y : usize, n : usize, tt :
          *d2_index -= 1;
       }
       else{
-         if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2_index); }
+         if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(interval,y,interval_boundaries,count,counter,d2_index); }
        }
     false
     }
@@ -190,7 +190,7 @@ pub fn easy_clustered(index :  usize , interval : usize, y : usize, n : usize, t
       else { *count +=  (l as u32 * (*d2_index - dprime) as u32) as i64 ;
       *d2_index = dprime; }
     }
-    else {if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(index,interval,y,interval_boundaries,count,counter,d2_index); } }
+    else {if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(interval,y,interval_boundaries,count,counter,d2_index); } }
     false
       } 
     
@@ -203,7 +203,7 @@ pub fn easy_clustered(index :  usize , interval : usize, y : usize, n : usize, t
        match tt[index] {
           0 => { if easy_clustered(index, interval, y, n, tt, switch, interval_boundaries, count, counter, d2_index, m, pi, p) { break;} /*continue ;*/ } ,
           1 => { if easy_sparse(index,interval,y,n,tt,switch,interval_boundaries,count,counter,d2_index,pi) { break; }   } ,
-          _ => { if (interval > 0 || counter[1] > 0) &&  hard(index,interval,y,interval_boundaries,count,counter,d2_index)  { break;} else{s2bprimes += 1 ;} } ,
+          _ => { if (interval > 0 || counter[1] > 0) &&  hard(interval,y,interval_boundaries,count,counter,d2_index)  { break;} else{s2bprimes += 1 ;} } ,
      }}
 s2bprimes
      } 
