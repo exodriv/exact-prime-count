@@ -94,3 +94,4 @@ println!("prime count for 10 ^ {} = {} ",exponent,count - phi2) ;
 let end: DateTime<Local> = Local::now(); let elapsed = end-start ;
 println!("{} minutes {} seconds {} milliseconds",elapsed.num_minutes(),elapsed.num_seconds()-elapsed.num_minutes()*60, elapsed.num_milliseconds()-elapsed.num_seconds()*1000) ;
 continue 'foo ; } }
+

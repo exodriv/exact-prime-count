@@ -201,9 +201,9 @@ pub fn easy_clustered(index :  usize , interval : usize, y : usize, n : usize, t
          while index + 1 < *d2_index// {return s2bprimes; }
       {  let y = (m / (p[index + 1] as u64 * p[*d2_index] as u64)) as usize;
        match tt[index] {
-          0 => { if easy_clustered(index, interval, y, n, tt, switch, interval_boundaries, count, counter, d2_index, m, pi, p) { break;} /*continue ;*/ } ,
-          1 => { if easy_sparse(index,interval,y,n,tt,switch,interval_boundaries,count,counter,d2_index,pi) { break; }   } ,
-          _ => { if (interval > 0 || counter[1] > 0) &&  hard(interval,y,interval_boundaries,count,counter,d2_index)  { break;} else{s2bprimes += 1 ;} } ,
+          0 => { let easy_c: bool = easy_clustered(index, interval, y, n, tt, switch, interval_boundaries, count, counter, d2_index, m, pi, p); if easy_c { break;}  } ,
+          1 => { let easy_s: bool = easy_sparse(index,interval,y,n,tt,switch,interval_boundaries,count,counter,d2_index,pi); if easy_s { break; }   } ,
+          _ => { let hard = hard(interval,y,interval_boundaries,count,counter,d2_index); if (interval > 0 || counter[1] > 0) &&  hard  { break;} else{s2bprimes += 1 ;} } ,
      }}
 s2bprimes
      } 
