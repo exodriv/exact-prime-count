@@ -3,17 +3,19 @@ extern crate mysilva ;
 extern crate bit_vec ;
 extern crate itertools ;
 // use std::io;
-use std::cell::OnceCell;
+// use std::cell::OnceCell;
 use bit_vec::BitVec ;
 use mysilva::* ;
 use chrono::* ;
 // use itertools::Itertools ;
 const SIGNBIT : i32 = 1<<31;
+type Intervals<'a> = (usize,&'a[usize],usize);
 // const SUBSTITUTE : usize = 1 ;
 fn main() {
 'foo: loop {
-	let cell: OnceCell<u64> = OnceCell::new();
-	let (exponent,m) = input(cell);
+	// let cell: OnceCell<u64> = OnceCell::new();
+	let exponent = input();
+	let m = 10u64.pow(exponent);
 	let start: DateTime<Local> = Local::now();
 	println!("{:?}",start.format("%a %e %b %T ").to_string()) ;
 // println!("Please enter an integer from 1 to 18. The program will count the exact number of primes below this power of 10: ");
@@ -98,19 +100,21 @@ for interval in 0..num_intervals { let  counter = &mut initial.clone() ;
 	offsets[1] = interval_clear(offsets[1], counter,interval_length,primes[1]) ;
 for  index in 2..a+1 {  offsets[index] = interval_clear(offsets[index], counter,interval_length,primes[index]) ;
 //		thread::spawn(|index| 
-if index < astar { special_leaves_type_1(index,interval,&mut m1,n,primes[index + 1],m,&interval_boundaries,&mu,&mut count,&phi,counter) ; } 
+let here: Intervals = (interval,&interval_boundaries,interval_length);
+if index < astar { 
+	special_leaves_type_1(index,here,&mut m1,n,primes[index + 1],m,&mu,&mut count,&phi,counter) ; } 
 //});
  else if index < a-1 // && switch[index] 
 {  
-	if interval == 
+	if here.0 == 
 		0b0 {
-		special_leaves_type_2(index,0,&mut d2[index],m,
-		&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&vec!(0;interval_length),&pi);}
-		let	s2bprimes = special_leaves_type_2(index,interval,&mut d2[index],m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,counter,&pi);
+		special_leaves_type_2(index,here,&mut d2[index],m,
+		&primes,&mut tt,n,&mut switch,&mut count,&vec!(0;here.2),&pi);}
+		let	s2bprimes = special_leaves_type_2(index,here,&mut d2[index],m,&primes,&mut tt,n,&mut switch,&mut count,counter,&pi);
  		count += (s2bprimes as u64 * phi[index]) as i64 ;
 		   }
 else if !switch[index] && index < a-1 { continue;}
-else if index == a { let p2primes = p2(interval,&mut u,&mut v,n,&mut w,&mut block,&primes,m,&interval_boundaries,&mut phi2,counter,a)  ;
+else if index == a { let p2primes = p2(here,&mut u,&mut v,n,&mut w,&mut block,&primes,m,&mut phi2,counter,a)  ;
 phi2 += phi[index] as i64 * p2primes as i64; }
 
 phi[index] += (counter[last] & !SIGNBIT) as u64; };   }
