@@ -114,10 +114,9 @@ else if !switch[index] && index < a-1 { continue;}
 else if index == a { 
 	let  p2_var : P2Vars = (&mut u,v,w);
 	let p2return = p2(here, this,p2_var,/*&mut u, v, w,*/&mut block,&primes,a)  ;
-	let p2primes ;
-	(p2primes,v,w) = p2return;
+	let p2primes = p2return.0;
+	(_,v,w) = p2return;
 count -= phi[index] as i64 * p2primes as i64; }
-
 phi[index] += (counter[last] & !SIGNBIT) as u64; };   }
 //end of main loop
 println!("prime count for 10 ^ {} = {} ",exponent,count ) ; 
