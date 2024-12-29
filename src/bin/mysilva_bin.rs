@@ -59,14 +59,14 @@ let mut switch : Vec<bool> = vec![false; a + 1];
 // (0..astar).for_each(|index| switch[index] = true);
 (1..num_intervals).for_each(|i|  interval_boundaries[i] = 1 + (i * interval_length) ) ;
 interval_boundaries[num_intervals] = z;
-let mut  phi2 = (a as i64* (a as i64 - 1)) >> 1;
+// let mut  phi2 = (a as i64* (a as i64 - 1)) >> 1;
 let mut u = match exponent % 2 {
  0 =>  10usize.pow(exponent/2) - 1,
  _  => 10.0_f64.powf(exponent as f64 / 2.0).floor() as usize,}; 
 if u % 2 == 0 { u -= 1;}
 let mut v = a;
 let mut w = u + 1;
-let mut  count = a as i64 - 1;
+let mut  count = a as i64 - 1 - ((a as i64* (a as i64 - 1)) >> 1);
 count += ordinary_leaves(n,&mu,&m);
 (0..2).for_each(|index| 
  	count -= special_leaves_type_1_substitute(index,&primes,n,&mu,m) )    ;
@@ -111,12 +111,12 @@ if index < astar {
  		count += (s2bprimes as u64 * phi[index]) as i64 ;
 		   }
 else if !switch[index] && index < a-1 { continue;}
-else if index == a { let p2primes = p2(here, this,&mut u,&mut v,&mut w,&mut block,&primes,&mut phi2,a)  ;
-phi2 += phi[index] as i64 * p2primes as i64; }
+else if index == a { let p2primes = p2(here, this,&mut u,&mut v,&mut w,&mut block,&primes,a)  ;
+count -= phi[index] as i64 * p2primes as i64; }
 
 phi[index] += (counter[last] & !SIGNBIT) as u64; };   }
 //end of main loop
-println!("prime count for 10 ^ {} = {} ",exponent,count - phi2) ; 
+println!("prime count for 10 ^ {} = {} ",exponent,count ) ; 
 let end: DateTime<Local> = Local::now(); let elapsed = end-start ;
 println!("{} minutes {} seconds {} milliseconds",elapsed.num_minutes(),elapsed.num_seconds()-elapsed.num_minutes()*60, elapsed.num_milliseconds()-elapsed.num_seconds()*1000) ;
 continue 'foo ; } }
