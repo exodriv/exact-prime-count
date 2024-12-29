@@ -12,6 +12,7 @@ const SIGNBIT : i32 = 1<<31;
 type Intervals<'a> = (usize,&'a[usize],usize);
 type RegVars<'a> = (u64,usize, &'a mut i64,&'a[i32]);
 type P2Vars<'a> = (&'a mut usize, usize, usize);
+type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [usize]);
 // const SUBSTITUTE : usize = 1 ;
 fn main() {
 'foo: loop {
@@ -100,14 +101,13 @@ if index < astar {
 //});
  else if index < a-1 // && switch[index] 
 {  
-	// this.2 = &mut count;
+let mut s2b : S2bVars = (&mut d2[index],&pi,&primes);
 	if here.0 == 
 		0b0 {
 			this.3 = &temp;
-		special_leaves_type_2(index,here,&mut this,&mut d2[index],
-		&primes,&mut tt,&mut switch,&pi);}
+		special_leaves_type_2(index,here,&mut this,&mut s2b,&mut tt,&mut switch);}
 		this.3 = counter;
-		let	s2bprimes = special_leaves_type_2(index,here,&mut this,&mut d2[index],&primes,&mut tt,&mut switch,&pi);
+		let	s2bprimes = special_leaves_type_2(index,here,&mut this,&mut s2b,&mut tt,&mut switch);
  		count += (s2bprimes as u64 * phi[index]) as i64 ;
 		   }
 else if !switch[index] && index < a-1 { continue;}

@@ -13,6 +13,8 @@ const SIGNBIT : i32 = 1<<31;
 type Intervals<'a> = (usize,&'a[usize],usize);
 type RegVars<'a> = (u64,usize,&'a mut i64,&'a[i32]);
 type P2Vars<'a> = (&'a mut usize, usize, usize);
+type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [usize]);
+
 
 
 pub fn int_sqrt(n :usize) -> usize {
@@ -174,49 +176,46 @@ pub fn hard( intervals : Intervals, reg_var : &mut RegVars, y : usize, d2_index:
     }
    
  #[inline]  
-pub fn easy_sparse(index :  usize , intervals : Intervals, reg_var : &mut RegVars, y : usize, tt : &mut[u8], switch : &mut [bool],
-	d2_index : &mut usize, pi : &[usize] ) -> bool  {
+pub fn easy_sparse(index :  usize , intervals : Intervals, reg_var : &mut RegVars, s2b_var : &mut S2bVars, y : usize, tt : &mut[u8], switch : &mut [bool]) -> bool  {
      
       if y < reg_var.1{
-         let l = pi[(y + 1) >> 1] - index + 1;
+         let l = s2b_var.1[(y + 1) >> 1] - index + 1;
          *reg_var.2 += l as i64;
-         *d2_index -= 1;
+         *s2b_var.0 -= 1;
       }
       else if !switch[index] { switch[index]=true; return true; }
-       else { tt[index] = 2 ; hard(intervals,reg_var,y,d2_index); }
+       else { tt[index] = 2 ; hard(intervals,reg_var,y,s2b_var.0); }
     false
     }
 	 
 #[inline]   
-pub fn easy_clustered(index :  usize , intervals : Intervals, reg_var : &mut RegVars, y : usize, tt: &mut[u8], switch : &mut [bool], 
-	 d2_index : &mut usize, pi : &[usize], p : &[usize] ) -> bool  {
+pub fn easy_clustered(index :  usize , intervals : Intervals, reg_var : &mut RegVars, s2b_var : &mut S2bVars, y : usize, tt: &mut[u8], switch : &mut [bool])  -> bool  {
       
      if y < reg_var.1  {
-     let   l = pi[(y + 1) >> 1] - index + 1;
-     let  term = reg_var.0 / (p[index + 1] as u64 * p[index + l] as u64);
-     let  dprime = pi[((term + 1) >> 1) as usize];
-     if p[dprime + 1] <= int_sqrt((reg_var.0 / p[index + 1] as u64) as usize) || dprime <= index  {
+     let   l = s2b_var.1[(y + 1) >> 1] - index + 1;
+     let  term = reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[index + l] as u64);
+     let  dprime = s2b_var.1[((term + 1) >> 1) as usize];
+     if s2b_var.2[dprime + 1] <= int_sqrt((reg_var.0 / s2b_var.2[index + 1] as u64) as usize) || dprime <= index  {
          tt[index] = 1;
          *reg_var.2 += l as i64;
-         *d2_index -= 1 ; }
-      else { *reg_var.2 +=  (l as u32 * (*d2_index - dprime) as u32) as i64 ;
-      *d2_index = dprime; }
+         *s2b_var.0 -= 1 ; }
+      else { *reg_var.2 +=  (l as u32 * (*s2b_var.0 - dprime) as u32) as i64 ;
+      *s2b_var.0 = dprime; }
     }
     else if !switch[index] { switch[index]=true; return true; } 
-    else { tt[index] = 2 ; hard(intervals,reg_var,y,d2_index); } 
+    else { tt[index] = 2 ; hard(intervals,reg_var,y,s2b_var.0); } 
     false
       } 
     
   #[inline]  
-    pub fn special_leaves_type_2(index: usize, intervals : Intervals,reg_var: &mut RegVars,d2_index : &mut usize, p : &[usize],
-      tt : &mut[u8],	switch : &mut[bool], pi : &[usize] )  -> u32 {
+    pub fn special_leaves_type_2(index: usize, intervals : Intervals,reg_var: &mut RegVars,s2b_var : &mut S2bVars, tt : &mut[u8],	switch : &mut[bool])  -> u32 {
     let mut s2bprimes= 0;
-         while index + 1 < *d2_index
-      {  let y = (reg_var.0 / (p[index + 1] as u64 * p[*d2_index] as u64)) as usize;
+         while index + 1 < *s2b_var.0
+      {  let y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;
        match tt[index] {
-          0 => { let easy_c: bool = easy_clustered(index, intervals,  reg_var, y, tt, switch, d2_index, pi, p); if easy_c { break;}  } ,
-          1 => { let easy_s: bool = easy_sparse(index,intervals, reg_var,y, tt,switch,d2_index,pi); if easy_s { break; }   } ,
-          _ => { let hard = hard(intervals, reg_var,y,d2_index); if (intervals.0 > 0 || reg_var.3[1] > 0) &&  hard  { break;} else{s2bprimes += 1 ;} } ,
+          0 => { let easy_c: bool = easy_clustered(index, intervals,  reg_var, s2b_var,y, tt, switch); if easy_c { break;}  } ,
+          1 => { let easy_s: bool = easy_sparse(index,intervals, reg_var,s2b_var,y, tt,switch); if easy_s { break; }   } ,
+          _ => { let hard = hard(intervals, reg_var,y,s2b_var.0); if (intervals.0 > 0 || reg_var.3[1] > 0) &&  hard  { break;} else{s2bprimes += 1 ;} } ,
      }}
 s2bprimes
      } 
