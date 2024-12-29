@@ -1,8 +1,9 @@
 extern crate mysilva ;
-extern crate chrono ;
+// extern crate chrono ;
 extern crate bit_vec ;
 extern crate itertools ;
-use std::io;
+// use std::io;
+use std::cell::OnceCell;
 use bit_vec::BitVec ;
 use mysilva::* ;
 use chrono::* ;
@@ -11,16 +12,21 @@ const SIGNBIT : i32 = 1<<31;
 // const SUBSTITUTE : usize = 1 ;
 fn main() {
 'foo: loop {
-println!("Please enter an integer from 1 to 18. The program will count the exact number of primes below this power of 10: ");
-let mut exponent = String::new()  ;
-io::stdin().read_line(&mut exponent).ok().expect("Failed to read line");
-let exponent : u32 = exponent.trim().parse().ok().expect("Please enter an integer") ;
-match exponent {
-	1..=18 => (), 
-	_ => {println!("Not a valid input: integer between 1 and 18"); return ;}, }
-let start: DateTime<Local> = Local::now();
-println!("{:?}",start.format("%a %e %b %T ").to_string()) ;
-let m = 10u64.pow(exponent) ;
+	let cell: OnceCell<u64> = OnceCell::new();
+	let (exponent,m) = input(cell);
+	let start: DateTime<Local> = Local::now();
+	println!("{:?}",start.format("%a %e %b %T ").to_string()) ;
+// println!("Please enter an integer from 1 to 18. The program will count the exact number of primes below this power of 10: ");
+// let mut exponent = String::new()  ;
+// io::stdin().read_line(&mut exponent).expect("Failed to read line");
+// let exponent : u32 = exponent.trim().parse().expect("Please enter an integer") ;
+// match exponent {
+// 	1..=18 => (), 
+// 	_ => {println!("Not a valid input: integer between 1 and 18"); return ;}, }
+// let start: DateTime<Local> = Local::now();
+// println!("{:?}",start.format("%a %e %b %T ").to_string()) ;
+// let cell = OnceCell::new();
+// let m = cell.get_or_init(||{10u64.pow(exponent) });
 let mut beta = 0.00087 ;
 // if exponent == 18 {beta = 0.0008; }// 0.0033 takes half an hour
 if exponent <= 7 { beta = 0.001 ; }
@@ -68,45 +74,43 @@ if u % 2 == 0 { u -= 1;}
 let mut v = a;
 let mut w = u + 1;
 let mut  count = a as i64 - 1;
-count += ordinary_leaves(n,&mu,m);
+count += ordinary_leaves(n,&mu,&m);
 (0..2).for_each(|index| 
  	count -= special_leaves_type_1_substitute(index,&primes,n,&mu,m) )    ;
+	//  let mut count: i64 = &mut count; 
 (astar..a - 1).for_each(|index| {
     {
         let pb = primes[index + 1];
-        let count: &mut i64 = &mut count; 
     let    term = (m / (pb as u64 * pb as u64)) as usize;
    d2[index] = match  term {
        term if term <= pb =>  index + 1,
        term if term < n =>  pi[(term + 1) >> 1] ,
        _ => a ,
            };
-    *count += (a - d2[index]) as i64 ;
+    count += (a - d2[index]) as i64 ;
     } ;
     // special_leaves_type_2(index,0,&mut d2[index],m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&initial,&pi); 
 	}
 	 ) ;
 initial.iter_mut()/*.into()*/.enumerate().for_each( |(i,e)| {*e = (i as i32 +1) & !(i as i32) } ) ;
 // start of main loop
-for interval in 0..num_intervals { let mut counter = &mut initial.clone() ;
-	offsets[1] = interval_clear(offsets[1],&mut counter,interval_length,primes[1]) ;
-for  index in 2..a+1 {  offsets[index] = interval_clear(offsets[index],&mut counter,interval_length,primes[index]) ;
+for interval in 0..num_intervals { let  counter = &mut initial.clone() ;
+	offsets[1] = interval_clear(offsets[1], counter,interval_length,primes[1]) ;
+for  index in 2..a+1 {  offsets[index] = interval_clear(offsets[index], counter,interval_length,primes[index]) ;
 //		thread::spawn(|index| 
-if index < astar { special_leaves_type_1(index,interval,&mut m1,n,primes[index + 1],m,&interval_boundaries,&mu,&mut count,&phi,&counter) ; } 
+if index < astar { special_leaves_type_1(index,interval,&mut m1,n,primes[index + 1],m,&interval_boundaries,&mu,&mut count,&phi,counter) ; } 
 //});
  else if index < a-1 // && switch[index] 
 {  
-	match interval {0 => {
+	if interval == 
+		0b0 {
 		special_leaves_type_2(index,0,&mut d2[index],m,
-		&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&vec!(0;interval_length),&pi);},
-		_ => {},
-	}
-		let	s2bprimes = special_leaves_type_2(index,interval,&mut d2[index],m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&counter,&pi);
+		&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&vec!(0;interval_length),&pi);}
+		let	s2bprimes = special_leaves_type_2(index,interval,&mut d2[index],m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,counter,&pi);
  		count += (s2bprimes as u64 * phi[index]) as i64 ;
 		   }
-		// a-1 => {},
-// else if !switch[index] && index < a-1 { continue;}
-else if index == a { let p2primes = p2(interval,&mut u,&mut v,n,&mut w,&mut block,&primes,m,&interval_boundaries,&mut phi2,&counter,a)  ;
+else if !switch[index] && index < a-1 { continue;}
+else if index == a { let p2primes = p2(interval,&mut u,&mut v,n,&mut w,&mut block,&primes,m,&interval_boundaries,&mut phi2,counter,a)  ;
 phi2 += phi[index] as i64 * p2primes as i64; }
 
 phi[index] += (counter[last] & !SIGNBIT) as u64; };   }

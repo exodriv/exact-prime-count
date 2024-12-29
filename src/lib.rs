@@ -1,14 +1,19 @@
 extern crate bit_vec ;
 extern crate itertools ;
 extern crate core ;
+extern crate chrono;
+// extern crate mysilva_bin;
 use bit_vec::BitVec;
+use std::io;
 use std::cmp ;
+use std::cell::OnceCell;
 use itertools::Itertools ;
+// use chrono::*;
 const SIGNBIT : i32 = 1<<31;
 
-pub fn modneg( x : i64, y : usize) -> usize {
-	(( x % y as i64) + y as i64) as usize % y
-	}
+// pub fn modneg( x : i64, y : usize) -> usize {
+// 	(( x % y as i64) + y as i64) as usize % y
+// 	}
 
 pub fn int_sqrt(n :usize) -> usize {
 	((n as f64).sqrt()).floor() as usize
@@ -32,22 +37,36 @@ pub fn cnt_update(mut pos : usize, counter : &mut[i32], last : usize ) {
     while pos <= last {
       counter[pos] -= 1;
       pos |= pos + 1; 
-      // if pos > last {break;}
     }
     }
 
 #[inline]
-pub fn interval_clear(mut j: usize,  counter : &mut[i32], interval_length : usize, prime : usize) -> usize {
-//   (offsets[index]..interval_length).step(prime).foreach(|j| {    	if counter[j] > 0 { cnt_update( j, counter, interval_length ) ; } }) ; much slower
-  
-   
+pub fn interval_clear( j: usize,  counter : &mut[i32], interval_length : usize, prime : usize) -> usize {
+//   (offsets[index]..interval_length).step(prime).foreach(|j| {    	if counter[j] > 0 { cnt_update( j, counter, interval_length ) ; } }) ; much slower 
    let last = interval_length - 1;
-   while j < interval_length {
-   	if counter[j] > 0 { cnt_update( j, counter, last) ; }
-   	j += prime ;
+   for i in (j..interval_length).step_by(prime) {
+   // while j < interval_length {
+   	if counter[i] > 0 { cnt_update( i, counter, last) ; }
+   	// j += prime ;
    	}
-  modneg( j as i64 - interval_length as i64 , prime )
+      // interval_length - (interval_length - j) % prime
+  ( j as i64 - interval_length as i64 ).rem_euclid(prime as i64) as usize // not sure why this works
    }
+
+pub fn input(cell: OnceCell<u64>) -> (u32,u64) {
+   println!("Please enter an integer from 1 to 18. The program will count the exact number of primes below this power of 10: ");
+let mut exponent = String::new()  ;
+io::stdin().read_line(&mut exponent).expect("Failed to read line");
+let exponent : u32 = exponent.trim().parse().expect("Please enter an integer") ;
+match exponent {
+	1..=18 => (), 
+	_ => {println!("Not a valid input: integer between 1 and 18"); return (0,0);}, }
+
+let m = cell.get_or_init(||{10u64.pow(exponent) });
+(exponent,*m)
+}
+
+
 
  pub fn initialize_arrays(ll : usize, mu : &mut[isize], pi : &mut [usize],  primes : &mut [usize]) -> usize {
  	 	for j in  2..mu.len() {
@@ -75,22 +94,24 @@ let mut pix = 1 ;
 for (i , elem) in mu.iter().enumerate().dropping(2) {
 if *elem == 1 - 2 * i as isize {
  	pix += 1;
- 	primes[pix] = 2 * i as usize -1 ;
+ 	primes[pix] = 2 * i -1 ;
 }
-pi[i as usize]=pix;	
+pi[i]=pix;	
  }
 //println!("{:?}",mu) ;
  pix
  } 
  
-pub fn ordinary_leaves(n : usize, mu : &[isize], m : u64) -> i64 {
+
+
+pub fn ordinary_leaves(n : usize, mu : &[isize], m: &u64) -> i64 {
 let mut result = 0 ;
 let it = (1..n+1).filter(|&i| i % 4 != 0) ;
 it.for_each(|i| {if i % 2 == 1 
 		{let term = (mu[(i+1) >> 1]).signum() as i64;
-  	result +=  term * (m as i64 / i as i64) ;}
+  	result +=  term * (*m as i64 / i as i64) ;}
 		 else { let term = (mu[((i >> 1)  + 1) >> 1]).signum() as i64 ;
-	result -= term * (m as i64 / i as i64) ;} }) ;
+	result -= term * (*m as i64 / i as i64) ;} }) ;
 result
 }
 
@@ -140,18 +161,6 @@ while m1[b] > criterion { let y  = (m / (m1[b] as u64 * pp as u64 )) as usize  ;
    m1[b] -= 2 ;    }
   } 
  	 
-//  #[inline]
-// pub fn special_leaves_type_2_initialize( index : usize, pb : usize, m : u64, t : &mut[usize], n : usize, pi : &[usize], a : usize, d2 : &mut[usize], count : &mut i64 )  { 
-// let    term = (m / (pb as u64 * pb as u64)) as usize;
-// t[index] = match  term {
-//    term if term <= pb =>  index + 2,
-//    term if term < n =>  pi[(term + 1) >> 1] + 1,
-//    _ => a + 1,
-//        };
-// d2[index] = t[index] - 1 ;
-// *count += (a - d2[index]) as i64 ;
-// }
-
 #[inline]
 pub fn hard( interval : usize, y : usize, interval_boundaries : &[usize], count : &mut i64, counter : &[i32], d2_index: &mut usize) -> bool {
     if y + 1 >= interval_boundaries[interval+1] {return true ; }
@@ -169,9 +178,8 @@ pub fn easy_sparse(index :  usize , interval : usize, y : usize, n : usize, tt :
          *count += l as i64;
          *d2_index -= 1;
       }
-      else{
-         if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(interval,y,interval_boundaries,count,counter,d2_index); }
-       }
+      else if !switch[index] { switch[index]=true; return true; }
+       else { tt[index] = 2 ; hard(interval,y,interval_boundaries,count,counter,d2_index); }
     false
     }
 	 
@@ -190,7 +198,8 @@ pub fn easy_clustered(index :  usize , interval : usize, y : usize, n : usize, t
       else { *count +=  (l as u32 * (*d2_index - dprime) as u32) as i64 ;
       *d2_index = dprime; }
     }
-    else {if !switch[index] { switch[index]=true; return true; } else { tt[index] = 2 ; hard(interval,y,interval_boundaries,count,counter,d2_index); } }
+    else if !switch[index] { switch[index]=true; return true; } 
+    else { tt[index] = 2 ; hard(interval,y,interval_boundaries,count,counter,d2_index); } 
     false
       } 
     
@@ -214,7 +223,7 @@ s2bprimes
 block.clear();
    let mut i  = 1 ; 
     while p[i] * p[i] <= y {
-    let  mut offset = modneg(1 - x as i64, p[i]);
+    let  mut offset = (1 - x as i64).rem_euclid( p[i] as i64) as usize;
 //    (offset..2+y-x).step(p[i]).foreach(|j| block.set(j,true) ) ;// more than twice the time - map/collect makes no difference
        while offset <= 1 + (y - x)  { 
     	 block.set(offset,true);
