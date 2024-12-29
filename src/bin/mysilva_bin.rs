@@ -111,7 +111,7 @@ if index < astar {
  		count += (s2bprimes as u64 * phi[index]) as i64 ;
 		   }
 else if !switch[index] && index < a-1 { continue;}
-else if index == a { let p2primes = p2(here,&mut u,&mut v,n,&mut w,&mut block,&primes,m,&mut phi2,counter,a)  ;
+else if index == a { let p2primes = p2(here, this,&mut u,&mut v,&mut w,&mut block,&primes,&mut phi2,a)  ;
 phi2 += phi[index] as i64 * p2primes as i64; }
 
 phi[index] += (counter[last] & !SIGNBIT) as u64; };   }
