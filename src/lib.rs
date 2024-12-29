@@ -12,6 +12,8 @@ use itertools::Itertools ;
 const SIGNBIT : i32 = 1<<31;
 type Intervals<'a> = (usize,&'a[usize],usize);
 type RegVars<'a> = (u64,usize,&'a mut i64,&'a[i32]);
+type P2Vars<'a> = (&'a mut usize, usize, usize);
+
 
 pub fn int_sqrt(n :usize) -> usize {
 	((n as f64).sqrt()).floor() as usize
@@ -234,18 +236,19 @@ block.clear();
 }
   
  #[inline]
- pub fn p2(intervals : Intervals, reg_var: RegVars,u : &mut usize, v :  &mut usize, w : &mut usize, block : &mut BitVec ,
- 	 p : &[usize], a : usize  ) -> u32    { 
+ pub fn p2(intervals : Intervals, reg_var: RegVars, mut p2_var : P2Vars,/* u : &mut usize, mut v : usize  ,mut  w : usize,*/ block : &mut BitVec ,
+ 	 p : &[usize], a : usize  ) -> (u32,usize,usize)    {
+      // let mut v = a; let mut w = *u + 1; 
   let mut p2primes = 0;
 loop { 
-    if *u <= reg_var.1 { *reg_var.2 += (*v as i64 * (*v - 1) as i64) >> 1 ; return p2primes;}
-   	if *u  < *w  { *w = cmp::max(2,*u -reg_var.1); 
-   		sieve2(*w,*u+1,p,block) ; } 
-    if !block[*u - *w + 1] { let y  = (reg_var.0 / (*u as u64)) as usize;
-    if y +1 >= intervals.1[intervals.0 + 1] { return p2primes; }  
+    if *p2_var.0 <= reg_var.1 { *reg_var.2 += (p2_var.1 as i64 * (p2_var.1 - 1) as i64) >> 1 ; return (p2primes,p2_var.1,p2_var.2);}
+   	if *p2_var.0  < p2_var.2  {p2_var.2 = cmp::max(2,*p2_var.0 -reg_var.1); 
+   		sieve2(p2_var.2,*p2_var.0 + 1,p,block) ; } 
+    if !block[*p2_var.0 - p2_var.2 + 1] { let y  = (reg_var.0 / (*p2_var.0 as u64)) as usize;
+    if y +1 >= intervals.1[intervals.0 + 1] { return (p2primes,p2_var.1,p2_var.2); }  
     *reg_var.2 -= (cnt_query(y + 1 - intervals.1[intervals.0], reg_var.3) as usize + a) as i64 - 1;
     p2primes += 1; 
-    *v += 1; }
-    *u -= 2; }  
+    p2_var.1 += 1; }
+    *p2_var.0 -= 2; }  
 } 
 

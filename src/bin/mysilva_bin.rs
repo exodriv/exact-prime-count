@@ -11,6 +11,7 @@ use chrono::* ;
 const SIGNBIT : i32 = 1<<31;
 type Intervals<'a> = (usize,&'a[usize],usize);
 type RegVars<'a> = (u64,usize, &'a mut i64,&'a[i32]);
+type P2Vars<'a> = (&'a mut usize, usize, usize);
 // const SUBSTITUTE : usize = 1 ;
 fn main() {
 'foo: loop {
@@ -70,7 +71,6 @@ let mut  count = a as i64 - 1 - ((a as i64* (a as i64 - 1)) >> 1);
 count += ordinary_leaves(n,&mu,&m);
 (0..2).for_each(|index| 
  	count -= special_leaves_type_1_substitute(index,&primes,n,&mu,m) )    ;
-	//  let mut count: i64 = &mut count; 
 (astar..a - 1).for_each(|index| {
     {
         let pb = primes[index + 1];
@@ -111,7 +111,11 @@ if index < astar {
  		count += (s2bprimes as u64 * phi[index]) as i64 ;
 		   }
 else if !switch[index] && index < a-1 { continue;}
-else if index == a { let p2primes = p2(here, this,&mut u,&mut v,&mut w,&mut block,&primes,a)  ;
+else if index == a { 
+	let  p2_var : P2Vars = (&mut u,v,w);
+	let p2return = p2(here, this,p2_var,/*&mut u, v, w,*/&mut block,&primes,a)  ;
+	let p2primes ;
+	(p2primes,v,w) = p2return;
 count -= phi[index] as i64 * p2primes as i64; }
 
 phi[index] += (counter[last] & !SIGNBIT) as u64; };   }
