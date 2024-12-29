@@ -85,6 +85,7 @@ count += ordinary_leaves(n,&mu,&m);
     // special_leaves_type_2(index,0,&mut d2[index],m,&primes,&mut tt,n,&mut switch,&interval_boundaries,&mut count,&initial,&pi); 
 	}
 	 ) ;
+	 let temp = vec!(0;interval_length);
 initial.iter_mut()/*.into()*/.enumerate().for_each( |(i,e)| {*e = (i as i32 +1) & !(i as i32) } ) ;
 // start of main loop
 for interval in 0..num_intervals { let  counter = &mut initial.clone() ;
@@ -92,18 +93,21 @@ for interval in 0..num_intervals { let  counter = &mut initial.clone() ;
 for  index in 2..a+1 {  offsets[index] = interval_clear(offsets[index], counter,interval_length,primes[index]) ;
 //		thread::spawn(|index| 
 let here: Intervals = (interval,&interval_boundaries,interval_length);
-let this: RegVars = (m,n,&mut count,counter);
+let mut this: RegVars = (m,n,&mut count,counter);
 if index < astar { 
 	special_leaves_type_1(index,here, this,&mut m1,primes[index + 1],&mu,&phi) ; 
 } 
 //});
  else if index < a-1 // && switch[index] 
 {  
+	// this.2 = &mut count;
 	if here.0 == 
 		0b0 {
-		special_leaves_type_2(index,here,&mut d2[index],m,
-		&primes,&mut tt,n,&mut switch,&mut count,&vec!(0;here.2),&pi);}
-		let	s2bprimes = special_leaves_type_2(index,here,&mut d2[index],m,&primes,&mut tt,n,&mut switch,&mut count,counter,&pi);
+			this.3 = &temp;
+		special_leaves_type_2(index,here,&mut this,&mut d2[index],
+		&primes,&mut tt,&mut switch,&pi);}
+		this.3 = counter;
+		let	s2bprimes = special_leaves_type_2(index,here,&mut this,&mut d2[index],&primes,&mut tt,&mut switch,&pi);
  		count += (s2bprimes as u64 * phi[index]) as i64 ;
 		   }
 else if !switch[index] && index < a-1 { continue;}
