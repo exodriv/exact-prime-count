@@ -11,6 +11,7 @@ use itertools::Itertools ;
 // use chrono::*;
 const SIGNBIT : i32 = 1<<31;
 type Intervals<'a> = (usize,&'a[usize],usize);
+type RegVars<'a> = (u64,usize,&'a mut i64,&'a[i32]);
 
 pub fn int_sqrt(n :usize) -> usize {
 	((n as f64).sqrt()).floor() as usize
@@ -151,14 +152,14 @@ acc
 }
 
 #[inline]
-pub fn special_leaves_type_1( b : usize , intervals : Intervals ,  m1 : &mut [usize] , n : usize, pp : usize , m : u64 ,
- 	 mu : &[isize], count : &mut i64, phi : &[u64], counter : &[i32]) { 
+pub fn special_leaves_type_1( b : usize , intervals : Intervals ,  reg_var : RegVars, m1 : &mut [usize] , pp : usize ,
+ 	 mu : &[isize], phi : &[u64]) { 
 if m1[b] % 2 == 0 { m1[b] -= 1;} 
-let criterion = n / pp ; 
-while m1[b] > criterion { let y  = (m / (m1[b] as u64 * pp as u64 )) as usize  ; //print!("y = {} ",y) ;
+let criterion = reg_var.1 / pp ; 
+while m1[b] > criterion { let y  = (reg_var.0/ (m1[b] as u64 * pp as u64 )) as usize  ; //print!("y = {} ",y) ;
    if y > intervals.1[intervals.0 + 1] - 2 { return ;} 
    let   muvalue = mu[(m1[b]+1) >> 1]; 
-   if muvalue.abs() > pp as isize { *count -=  muvalue.signum() as i64 * (phi[b] as i64 + cnt_query(y + 1 - intervals.1[intervals.0], counter) as i64);} 
+   if muvalue.abs() > pp as isize { *reg_var.2 -=  muvalue.signum() as i64 * (phi[b] as i64 + cnt_query(y + 1 - intervals.1[intervals.0], reg_var.3) as i64);} 
    m1[b] -= 2 ;    }
   } 
  	 

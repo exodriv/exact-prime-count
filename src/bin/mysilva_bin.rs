@@ -10,6 +10,7 @@ use chrono::* ;
 // use itertools::Itertools ;
 const SIGNBIT : i32 = 1<<31;
 type Intervals<'a> = (usize,&'a[usize],usize);
+type RegVars<'a> = (u64,usize, &'a mut i64,&'a[i32]);
 // const SUBSTITUTE : usize = 1 ;
 fn main() {
 'foo: loop {
@@ -18,17 +19,7 @@ fn main() {
 	let m = 10u64.pow(exponent);
 	let start: DateTime<Local> = Local::now();
 	println!("{:?}",start.format("%a %e %b %T ").to_string()) ;
-// println!("Please enter an integer from 1 to 18. The program will count the exact number of primes below this power of 10: ");
-// let mut exponent = String::new()  ;
-// io::stdin().read_line(&mut exponent).expect("Failed to read line");
-// let exponent : u32 = exponent.trim().parse().expect("Please enter an integer") ;
-// match exponent {
-// 	1..=18 => (), 
-// 	_ => {println!("Not a valid input: integer between 1 and 18"); return ;}, }
-// let start: DateTime<Local> = Local::now();
-// println!("{:?}",start.format("%a %e %b %T ").to_string()) ;
-// let cell = OnceCell::new();
-// let m = cell.get_or_init(||{10u64.pow(exponent) });
+
 let mut beta = 0.00087 ;
 // if exponent == 18 {beta = 0.0008; }// 0.0033 takes half an hour
 if exponent <= 7 { beta = 0.001 ; }
@@ -101,8 +92,10 @@ for interval in 0..num_intervals { let  counter = &mut initial.clone() ;
 for  index in 2..a+1 {  offsets[index] = interval_clear(offsets[index], counter,interval_length,primes[index]) ;
 //		thread::spawn(|index| 
 let here: Intervals = (interval,&interval_boundaries,interval_length);
+let this: RegVars = (m,n,&mut count,counter);
 if index < astar { 
-	special_leaves_type_1(index,here,&mut m1,n,primes[index + 1],m,&mu,&mut count,&phi,counter) ; } 
+	special_leaves_type_1(index,here, this,&mut m1,primes[index + 1],&mu,&phi) ; 
+} 
 //});
  else if index < a-1 // && switch[index] 
 {  
