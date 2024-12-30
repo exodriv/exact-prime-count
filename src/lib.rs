@@ -57,7 +57,12 @@ pub fn interval_clear( j: usize,  counter : &mut[i32], interval_length : usize, 
    	if counter[i] > 0 { cnt_update( i, counter, last) ; }
    	}
       */
-    // /*  interval_length - */(prime - (interval_length - j) % prime) % prime // no
+      /* 
+      match prime {
+         2 =>
+      }
+   (prime - (interval_length - j) %prime) % prime 
+   */ // no
   ( j as i64 - interval_length as i64 ).rem_euclid(prime as i64) as usize // not sure why this works; yes, (interval - j) % prime = interval - i) % prime
    }
 
@@ -121,49 +126,67 @@ it.for_each(|i| {if i % 2 == 1
 result
 }
 
- pub fn rphi(term: i64,  mut a : usize, bit : i8 , primes: &[usize],  total : &mut i64 )  {
-	loop {
-		if a == 1 {
-			*total +=  bit as i64 * term ; 
-			break;
-			}
-		else if term < primes[a] as i64 {
-			*total += bit as i64 ;
-			break;
-				}
-		else {
-			a -= 1;
-			rphi(term / (primes[a] as i64), a, -bit, primes, total) ;
-					}
-				}
-		}
+//  pub fn rphi(term: i64,  mut a : usize, bit : i8 , primes: &[usize],  total : &mut i64 )  {
+// 	loop {
+// 		if a == 1 {
+// 			*total +=  bit as i64 * term ; 
+// 			break;
+// 			}
+// 		else if term < primes[a] as i64 {
+// 			*total += bit as i64 ;
+// 			break;
+// 				}
+// 		else {
+// 			a -= 1;
+// 			rphi(term / (primes[a] as i64), a, -bit, primes, total) ;
+// 					}
+// 				}
+// 		}
  
-pub fn special_leaves_type_1_substitute(b : usize, primes : &[usize], n : usize, mu : &[isize], m : u64) -> i64 {
-let pp = primes[b + 1]    ; let mut acc = 0 ;
-let mut j = cmp::max(n / pp , pp ) as usize + 1 ;
-if j % 2 == 0 { j += 1;} 
-let mut i = j ; while i <= n {
-//for i in (j..(n+1)).step_by(2) {
-let muval1 = (mu[ ( i+1) >> 1 ] ).signum() ;
-if (mu[(i + 1) >> 1]).abs() > pp as isize && muval1 != 0 {
-let term = (m / (i * pp) as u64) as i64;
-let mut total : i64 = 0;
-rphi(term, b + 1, 1, primes, &mut total)  ;
-acc += muval1 as i64 * total ;
-}
-i+=2 ; }
-acc
-}
-
+      // pub fn special_leaves_type_1_substitute(b : usize, primes : &[usize], n : usize, mu : &[isize], m : u64) -> i64 {
+      //    let pp = primes[b + 1]    ; let mut acc = 0 ;
+      //    let mut j = cmp::max(n / pp , pp ) as usize + 1 ;
+      //    if j % 2 == 0 { j += 1;} 
+      //    let mut i = j ; while i <= n {
+      //    //for i in (j..(n+1)).step_by(2) {
+      //    let muval1 = (mu[ ( i+1) >> 1 ] ).signum() ;
+      //    if (mu[(i + 1) >> 1]).abs() > pp as isize && muval1 != 0 {
+      //    let term = (m / (i * pp) as u64) as i64;
+      //    let mut total : i64 = 0;
+      //    rphi(term, b + 1, 1, primes, &mut total)  ;
+      //    acc += muval1 as i64 * total ;
+      //    }
+      //    i+=2 ; }
+      //    acc
+      //    }
+         
+         pub fn s1b0( n : usize, mu : &[isize], m : u64) -> i64 {
+             let mut acc = 0 ;
+            let mut j = n/2 +1;
+            if j % 2 == 0 { j += 1;} 
+            let mut i = j ; while i <= n {
+            let muval1 = (mu[ ( i+1) >> 1 ] ).signum() ;
+            if (mu[(i + 1) >> 1]).abs() > 2 && muval1 != 0 {
+            let term = (m / (2 * i as u64) ) as i64;
+            // let mut total : i64 = 0;
+            // rphi(term, 1, 1, primes, &mut total)  ;
+            acc += muval1 as i64 * term; // total ;
+            }
+            i+=2 ; }
+            acc
+            }
 #[inline]
 pub fn special_leaves_type_1( b : usize , intervals : Intervals ,  reg_var : RegVars, m1 : &mut [usize] , pp : usize ,
  	 mu : &[isize], phi : &[u64]) { 
-if m1[b] % 2 == 0 { m1[b] -= 1;} 
-let criterion = reg_var.1 / pp ; 
+      // match b {0 => {if m1[b] % 2 == 0 {m1[b] -= 1}},
+      if (m1[b]) % 2 == 0 { m1[b] -= 1;}
+      let criterion = reg_var.1 / pp ;
+      // if b==0 {phi[b] = intervals.2 as u64;} 
 while m1[b] > criterion { let y  = (reg_var.0/ (m1[b] as u64 * pp as u64 )) as usize  ; //print!("y = {} ",y) ;
    if y > intervals.1[intervals.0 + 1] - 2 { return ;} 
    let   muvalue = mu[(m1[b]+1) >> 1]; 
-   if muvalue.abs() > pp as isize { *reg_var.2 -=  muvalue.signum() as i64 * (phi[b] as i64 + cnt_query(y + 1 - intervals.1[intervals.0], reg_var.3) as i64);} 
+   if muvalue.abs() > pp as isize 
+   { *reg_var.2 -=  muvalue.signum() as i64 * (phi[b] as i64 + cnt_query(y + 1 - intervals.1[intervals.0], reg_var.3) as i64);} 
    m1[b] -= 2 ;    }
   } 
  	 

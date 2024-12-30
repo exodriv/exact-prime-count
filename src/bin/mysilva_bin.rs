@@ -42,15 +42,17 @@ let end: DateTime<Local> = Local::now();
 println!("{:?}",end - start) ; 
  continue; }
 primes.truncate(pix+1) ;
+// println!("{:?}",primes);
 let a = pi[(n + 1) >> 1];
 let astar = pi[(int_sqrt(n) + 1) >> 1];
 let lc = (n as f64).log2().floor() as u8 ;   
 let interval_length = (1 << lc) as usize ;
+// println!("n = {:?} lc = {} interval_length = {}",n,lc,interval_length);
 let last = interval_length - 1;
 let num_intervals = (z / interval_length ) + 1 ;
 let mut interval_boundaries : Vec<usize> = vec![1; num_intervals + 1];
 let mut initial : Vec<i32> = vec![0; interval_length];
-let mut m1 : Vec<usize> = vec![n; astar ];
+let mut m1 : Vec<usize> = vec![n; astar +1];
 let mut phi : Vec<u64> = vec![0; a + 1];
 // let mut t : Vec<usize> = vec![0; a - 1];
 let mut tt : Vec<u8> = vec![0; a - 1];
@@ -70,8 +72,15 @@ let mut v = a;
 let mut w = u + 1;
 let mut  count = a as i64 - 1 - ((a as i64* (a as i64 - 1)) >> 1);
 count += ordinary_leaves(n,&mu,&m);
-(0..2).for_each(|index| 
- 	count -= special_leaves_type_1_substitute(index,&primes,n,&mu,m) )    ;
+count -= s1b0(n,&mu,m);
+/* 
+(0..1).for_each(|index| {
+ 	let s1bsubst = special_leaves_type_1_substitute(index,&primes,n,&mu,m);
+	println!("s1bsubst = {:?}",s1bsubst);
+	// count -= s1bsubst;
+}
+ )    ;
+ */
 (astar..a - 1).for_each(|index| {
     {
         let pb = primes[index + 1];
@@ -90,13 +99,19 @@ count += ordinary_leaves(n,&mu,&m);
 initial.iter_mut()/*.into()*/.enumerate().for_each( |(i,e)| {*e = (i as i32 +1) & !(i as i32) } ) ;
 // start of main loop
 for interval in 0..num_intervals { let  counter = &mut initial.clone() ;
-	offsets[1] = interval_clear(offsets[1], counter,interval_length,primes[1]) ;
-for  index in 2..a+1 {  offsets[index] = interval_clear(offsets[index], counter,interval_length,primes[index]) ;
+	// offsets[1] = interval_clear(offsets[1], counter,interval_length,primes[1]) ;
+for  index in 1..a+1 { 
+	//  let counter = &mut vec!(0;interval_length);
+	// if index > 0 {  
+	offsets[index] = interval_clear(offsets[index], counter,interval_length,primes[index]) ;
+	// }
 //		thread::spawn(|index| 
 let here: Intervals = (interval,&interval_boundaries,interval_length);
 let mut this: RegVars = (m,n,&mut count,counter);
 if index < astar { 
+	// println!("count before s1b {:?}",this.2); 
 	special_leaves_type_1(index,here, this,&mut m1,primes[index + 1],&mu,&phi) ; 
+	// println!("count after s1b {:?}, index = {} ",count,index);
 } 
 //});
  else if index < a-1 // && switch[index] 
