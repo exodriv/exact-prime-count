@@ -214,20 +214,17 @@ pub fn special_leaves_type_1(
         m1[b] -= 1;
     }
     let criterion = reg_var.1 / pp;
-    // if b==0 {phi[b] = intervals.2 as u64;}
     while m1[b] > criterion {// *pp > reg_var.1 {
-        let y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize ;
-        if y >=intervals.1[intervals.0+1] {return;} 
+      let y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize ;
+      if y >=intervals.1[intervals.0+1] {return;} 
       //   if y +1  < intervals.1[intervals.0] {return;}
-        let muvalue = mu[(m1[b] + 1) >> 1];
-        if muvalue.abs() > pp as isize {
+      let muvalue = mu[(m1[b] + 1) >> 1];
+      if muvalue.abs() > pp as isize {
+           let bit: i64 =  if b==0 {1} else {0};
             // println!("y = {} phi[0] = {} query = {}, sum of phi and query = {}",y,phi[b],query,phi[b] as i64+query) ;
             let query = cnt_query(y - intervals.1[intervals.0],reg_var.3) as i64;
-            *reg_var.2 -= if b == 0 {muvalue.signum() as i64 * y as i64}
-            else {
-            muvalue.signum() as i64
-                * (phi[b] as i64 + query)}; 
-        }
+            *reg_var.2 -= muvalue.signum() as i64 * (phi[b] as i64 + query - bit);
+         }
         m1[b] -= 2;
       }
       }
