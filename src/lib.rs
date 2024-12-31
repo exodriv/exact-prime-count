@@ -179,7 +179,7 @@ pub fn ordinary_leaves(n: usize, mu: &[isize], m: &u64) -> i64 {
 //    i+=2 ; }
 //    acc
 //    }
-#[inline]
+/*#[inline]
 pub fn s1b0(n: usize, mu: &[isize], m: u64) -> i64 {
     let mut acc = 0;
     let mut j = n / 2 +1;
@@ -195,7 +195,7 @@ pub fn s1b0(n: usize, mu: &[isize], m: u64) -> i64 {
         }
     }
     acc
-}
+}*/
 #[inline]
 pub fn special_leaves_type_1(
     b: usize,
@@ -225,13 +225,15 @@ pub fn special_leaves_type_1(
         let muvalue = mu[(m1[b] + 1) >> 1];
         if muvalue.abs() > pp as isize {
          // println!("y = {:?} interval = {}",y,intervals.0);
-           let query = cnt_query(y - intervals.1[intervals.0],reg_var.3) as i64;
-         //   if b == 0 {
+         let query = cnt_query(y - intervals.1[intervals.0],reg_var.3) as i64;
+         if b == 0 {
             // println!("y = {} phi[0] = {} query = {}, sum of phi and query = {}",y,phi[b],query,phi[b] as i64+query) ;
-         //   *reg_var.2 -= muvalue.signum() as i64 * (y as i64 - 1)} else {
+            *reg_var.2 -= muvalue.signum() as i64 * y as i64}
+             else {
             *reg_var.2 -= muvalue.signum() as i64
                 * (phi[b] as i64 + query); //cnt_query(y + 1 - intervals.1[intervals.0], reg_var.3) as i64);
         }
+      }
         m1[b] -= 2;
       }
       }

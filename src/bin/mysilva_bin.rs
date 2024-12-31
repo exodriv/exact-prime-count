@@ -80,7 +80,7 @@ fn main() {
         let mut w = u + 1;
         let mut count = a as i64 - 1 - ((a as i64 * (a as i64 - 1)) >> 1);
         count += ordinary_leaves(n, &mu, &m);
-        count -= s1b0(n, &mu, m);
+        // count -= s1b0(n, &mu, m);
         (astar..a - 1).for_each(|index| {
             {
                 let pp = primes[index + 1];
@@ -104,12 +104,12 @@ fn main() {
         for interval in 0..num_intervals {
             let counter = &mut initial.clone();
             // offsets[1] = interval_clear(offsets[1], counter,interval_length,primes[1]) ;
-            for index in 1..a + 1 {
+            for index in 0..a + 1 {
                 //  let counter = &mut vec!(0;interval_length);
-                // if index > 0 {
+                if index > 0 {
                 offsets[index] =
                     interval_clear(offsets[index], counter, interval_length, primes[index]);
-                // }
+                }
                 //		thread::spawn(|index|
                 let here: Intervals = (interval, &interval_boundaries, interval_length);
                 let mut this: RegVars = (m, n, &mut count, counter);
