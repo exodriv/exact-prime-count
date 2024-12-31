@@ -22,25 +22,25 @@ fn main() {
         let start: DateTime<Local> = Local::now();
         println!("{:?}", start.format("%a %e %b %T ").to_string());
 
-        let mut beta = 0.00087;
+        let beta = 0.00092;
         // if exponent == 18 {beta = 0.0008; }// 0.0033 takes half an hour
-        if exponent <= 7 {
-            beta = 0.001;
-        }
+        // if exponent <= 7 {
+        //     beta = 0.001;
+        // }
         let alpha = beta * (exponent as f64 * 10.0_f64.ln()).powi(3);
         let n = (alpha * (m as f64).cbrt() + 0.5).floor() as usize;
         let z = (10.0_f64.powf(exponent as f64 * 2.0 / 3.0) / alpha).floor() as usize + 1;
         //if n > z { println!("adjust beta");
         //    return; }
         let mut ll = (n + 1) >> 1;
-        if exponent <= 5 {
+        if exponent <= 6 {
             ll = (m as usize - 1) >> 1;
         }
         let mut primes: Vec<usize> = vec![1; ll + 1];
         let mut mu: Vec<isize> = vec![1; ll + 1];
         let mut pi: Vec<usize> = vec![0; ll + 1];
         let pix = initialize_arrays(ll, &mut mu, &mut pi, &mut primes);
-        if exponent <= 5 {
+        if exponent <= 6 {
             println!("prime count = {} ", pix);
             let end: DateTime<Local> = Local::now();
             println!("{:?}", end - start);
