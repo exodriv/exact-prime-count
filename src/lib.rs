@@ -1,14 +1,10 @@
 extern crate bit_vec;
 extern crate core;
 extern crate itertools;
-// extern crate chrono;
-// extern crate mysilva_bin;
 use bit_vec::BitVec;
 use std::cmp;
 use std::io;
-// use std::cell::OnceCell;
 use itertools::Itertools;
-// use chrono::*;
 const SIGNBIT: i32 = 1 << 31;
 type Intervals<'a> = (usize, &'a [usize], usize);
 type RegVars<'a> = (u64, usize, &'a mut i64, &'a [i32]);
@@ -16,7 +12,7 @@ type P2Vars<'a> = (&'a mut usize, usize, usize);
 type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [usize]);
 
 pub fn int_sqrt(n: usize) -> usize {
-    ((n as f64).sqrt()).floor() as usize
+    (n as f64).sqrt().floor() as usize
 }
 
 #[inline]
@@ -58,14 +54,7 @@ pub fn interval_clear(
             // cnt_update( i, counter, last ) ;
         }
     }); // much slower ; no longer
-        /*   for i in (j..interval_length).step_by(prime) {
-         if counter[i] > 0 { cnt_update( i, counter, last) ; }
-         }
-        */
     /*
-       match prime {
-          2 =>
-       }
     (prime - (interval_length - j) %prime) % prime
     */
  // no
@@ -136,66 +125,16 @@ pub fn ordinary_leaves(n: usize, mu: &[isize], m: &u64) -> i64 {
     let it = (1..n + 1).filter(|&i| i % 4 != 0);
     it.for_each(|i| {
         if i % 2 == 1 {
-            let term = (mu[(i + 1) >> 1]).signum() as i64;
+            let term = mu[(i + 1) >> 1].signum() as i64;
             result += term * (*m as i64 / i as i64);
         } else {
-            let term = (mu[((i >> 1) + 1) >> 1]).signum() as i64;
+            let term = mu[((i >> 1) + 1) >> 1].signum() as i64;
             result -= term * (*m as i64 / i as i64);
         }
     });
     result
 }
 
-//  pub fn rphi(term: i64,  mut a : usize, bit : i8 , primes: &[usize],  total : &mut i64 )  {
-// 	loop {
-// 		if a == 1 {
-// 			*total +=  bit as i64 * term ;
-// 			break;
-// 			}
-// 		else if term < primes[a] as i64 {
-// 			*total += bit as i64 ;
-// 			break;
-// 				}
-// 		else {
-// 			a -= 1;
-// 			rphi(term / (primes[a] as i64), a, -bit, primes, total) ;
-// 					}
-// 				}
-// 		}
-
-// pub fn special_leaves_type_1_substitute(b : usize, primes : &[usize], n : usize, mu : &[isize], m : u64) -> i64 {
-//    let pp = primes[b + 1]    ; let mut acc = 0 ;
-//    let mut j = cmp::max(n / pp , pp ) as usize + 1 ;
-//    if j % 2 == 0 { j += 1;}
-//    let mut i = j ; while i <= n {
-//    //for i in (j..(n+1)).step_by(2) {
-//    let muval1 = (mu[ ( i+1) >> 1 ] ).signum() ;
-//    if (mu[(i + 1) >> 1]).abs() > pp as isize && muval1 != 0 {
-//    let term = (m / (i * pp) as u64) as i64;
-//    let mut total : i64 = 0;
-//    rphi(term, b + 1, 1, primes, &mut total)  ;
-//    acc += muval1 as i64 * total ;
-//    }
-//    i+=2 ; }
-//    acc
-//    }
-/*#[inline]
-pub fn s1b0(n: usize, mu: &[isize], m: u64) -> i64 {
-    let mut acc = 0;
-    let mut j = n / 2 +1;
-    if j % 2 == 0 {
-        j += 1;
-    }
-    for i in (j..=n).step_by(2) {
-      let mui = mu[(i+1)>> 1];
-        let muval1 = mui.signum();
-        if mui.abs() > 2 
-         {
-            acc += muval1 as i64 * (m / (2 * i as u64)) as i64;
-        }
-    }
-    acc
-}*/
 #[inline]
 pub fn special_leaves_type_1(
     b: usize,
@@ -206,10 +145,7 @@ pub fn special_leaves_type_1(
     mu: &[isize],
     phi: &[u64],
 ) {
-    // match b {0 => {if m1[b] % 2 == 0 {m1[b] -= 1}},
-   /*  let mut start = reg_var.1 / pp + 1;
-    if start % 2 == 0 {start +=1;}*/
-   //  let m1b=m1[b];
+
     if (m1[b]) % 2 == 0 {
         m1[b] -= 1;
     }
@@ -232,12 +168,12 @@ pub fn special_leaves_type_1(
 
 #[inline]
 pub fn hard(intervals: Intervals, reg_var: &mut RegVars, y: usize, d2_index: &mut usize) -> bool {
-    (if y/* + 1*/ >= intervals.1[intervals.0 + 1] {
-        return true;
-    });
-    *reg_var.2 += cnt_query(y /*+ 1*/ - intervals.1[intervals.0], reg_var.3) as i64;
-    *d2_index -= 1;
-    false
+    if y < intervals.1[intervals.0 + 1] {
+        *reg_var.2 += cnt_query(y /*+ 1*/ - intervals.1[intervals.0], reg_var.3) as i64;
+        *d2_index -= 1;
+        return false;
+    };
+    true
 }
 
 #[inline]

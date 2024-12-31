@@ -68,7 +68,6 @@ fn main() {
         (1..num_intervals).for_each(|i| interval_boundaries[i] = i * interval_length);
 		// println!("interval_boundaries[0] = {:?}, z = {}",interval_boundaries[0],z);
         interval_boundaries[num_intervals] = z;
-        // let mut  phi2 = (a as i64* (a as i64 - 1)) >> 1;
         let mut u = match exponent % 2 {
             0 => 10usize.pow(exponent / 2) - 1,
             _ => 10.0_f64.powf(exponent as f64 / 2.0).floor() as usize,
@@ -136,7 +135,7 @@ fn main() {
                         );
                     }
                     this.3 = counter;
-                    let s2bprimes = special_leaves_type_2(
+                    let s2primes = special_leaves_type_2(
                         index,
                         here,
                         &mut this,
@@ -144,7 +143,7 @@ fn main() {
                         &mut tt,
                         &mut switch,
                     );
-                    count += (s2bprimes as u64 * phi[index]) as i64;
+                    count += (s2primes as u64 * phi[index]) as i64;
                 } else if !switch[index] && index < a - 1 {
                     continue;
                 } else if index == a {
