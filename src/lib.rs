@@ -226,14 +226,14 @@ pub fn special_leaves_type_1(
         if muvalue.abs() > pp as isize {
          // println!("y = {:?} interval = {}",y,intervals.0);
          let query = cnt_query(y - intervals.1[intervals.0],reg_var.3) as i64;
-         if b == 0 {
+         // if b == 0 {
             // println!("y = {} phi[0] = {} query = {}, sum of phi and query = {}",y,phi[b],query,phi[b] as i64+query) ;
-            *reg_var.2 -= muvalue.signum() as i64 * y as i64}
+            *reg_var.2 -= if b == 0 {muvalue.signum() as i64 * y as i64}
              else {
-            *reg_var.2 -= muvalue.signum() as i64
-                * (phi[b] as i64 + query); //cnt_query(y + 1 - intervals.1[intervals.0], reg_var.3) as i64);
+            muvalue.signum() as i64
+                * (phi[b] as i64 + query)}; //cnt_query(y + 1 - intervals.1[intervals.0], reg_var.3) as i64);
         }
-      }
+      // }
         m1[b] -= 2;
       }
       }
