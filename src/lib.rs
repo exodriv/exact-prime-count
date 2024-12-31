@@ -218,14 +218,14 @@ pub fn special_leaves_type_1(
     while m1[b] > criterion {
 // for m1b in (start..=reg_var.1).step_by(2) {
         let y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize; 
-        if y > intervals.1[intervals.0 + 1] - 2 {
+        if y > intervals.1[intervals.0 + 1] - 1 {
             return;
         }
       //   if y +1  < intervals.1[intervals.0] {return;}
         let muvalue = mu[(m1[b] + 1) >> 1];
         if muvalue.abs() > pp as isize {
          // println!("y = {:?} interval = {}",y,intervals.0);
-           let query = cnt_query(y + 1 - intervals.1[intervals.0],reg_var.3) as i64;
+           let query = cnt_query(y - intervals.1[intervals.0],reg_var.3) as i64;
          //   if b == 0 {
             // println!("y = {} phi[0] = {} query = {}, sum of phi and query = {}",y,phi[b],query,phi[b] as i64+query) ;
          //   *reg_var.2 -= muvalue.signum() as i64 * (y as i64 - 1)} else {
@@ -239,10 +239,10 @@ pub fn special_leaves_type_1(
 
 #[inline]
 pub fn hard(intervals: Intervals, reg_var: &mut RegVars, y: usize, d2_index: &mut usize) -> bool {
-    (if y + 1 >= intervals.1[intervals.0 + 1] {
+    (if y/* + 1*/ >= intervals.1[intervals.0 + 1] {
         return true;
     });
-    *reg_var.2 += cnt_query(y + 1 - intervals.1[intervals.0], reg_var.3) as i64;
+    *reg_var.2 += cnt_query(y /*+ 1*/ - intervals.1[intervals.0], reg_var.3) as i64;
     *d2_index -= 1;
     false
 }
@@ -381,11 +381,11 @@ pub fn p2(
         }
         if !block[*p2_var.0 - p2_var.2 + 1] {
             let y = (reg_var.0 / (*p2_var.0 as u64)) as usize;
-            if y + 1 >= intervals.1[intervals.0 + 1] {
+            if y /*+1*/ >= intervals.1[intervals.0 + 1] {
                 return (p2primes, p2_var.1, p2_var.2);
             }
             *reg_var.2 -=
-                (cnt_query(y + 1 - intervals.1[intervals.0], reg_var.3) as usize + a) as i64 - 1;
+                (cnt_query(y /*+ 1*/ - intervals.1[intervals.0], reg_var.3) as usize + a) as i64 - 1;
             p2primes += 1;
             p2_var.1 += 1;
         }

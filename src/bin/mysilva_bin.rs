@@ -55,7 +55,7 @@ fn main() {
         // println!("n = {:?} lc = {} interval_length = {}",n,lc,interval_length);
         let last = interval_length - 1;
         let num_intervals = (z / interval_length) + 1;
-        let mut interval_boundaries: Vec<usize> = vec![1; num_intervals + 1];
+        let mut interval_boundaries: Vec<usize> = vec![0; num_intervals + 1];
         let mut initial: Vec<i32> = vec![0; interval_length];
         let mut m1: Vec<usize> = vec![n; astar + 1];
         let mut phi: Vec<u64> = vec![0; a + 1];
@@ -65,7 +65,7 @@ fn main() {
         let mut block: BitVec = BitVec::from_elem(n + 3, false);
         let mut switch: Vec<bool> = vec![false; a + 1];
         // (0..astar).for_each(|index| switch[index] = true);
-        (1..num_intervals).for_each(|i| interval_boundaries[i] = 1 + (i * interval_length));
+        (1..num_intervals).for_each(|i| interval_boundaries[i] = i * interval_length);
 		// println!("interval_boundaries[0] = {:?}, z = {}",interval_boundaries[0],z);
         interval_boundaries[num_intervals] = z;
         // let mut  phi2 = (a as i64* (a as i64 - 1)) >> 1;
