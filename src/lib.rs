@@ -27,15 +27,6 @@ pub fn cnt_query(mut pos: usize, counter: &[i32]) -> u32 {
     acc as u32
 }
 
-// #[inline]
-// pub fn cnt_update(mut pos : usize, counter : &mut[i32], last : usize ) {
-//     counter[pos] |= SIGNBIT;
-//     while pos <= last {
-//       counter[pos] -= 1;
-//       pos |= pos + 1;
-//     }
-//     }
-
 #[inline]
 pub fn interval_clear(
     j: usize,
@@ -43,22 +34,19 @@ pub fn interval_clear(
     interval_length: usize,
     prime: usize,
 ) -> usize {
-    // let last = interval_length - 1;
-    (j..interval_length).step_by(prime).for_each(|mut i| {
-        if counter[i] > 0 {
-            counter[i] |= SIGNBIT;
-            while i < interval_length {
-                counter[i] -= 1;
-                i |= i + 1;
+    (j..interval_length).step_by(prime).for_each(|i| {
+        let mut pos = i;
+        if counter[pos] > 0 {
+            counter[pos] |= SIGNBIT;
+            while pos < interval_length {
+                counter[pos] -= 1;
+                pos |= pos + 1;
             }
-            // cnt_update( i, counter, last ) ;
         }
-    }); // much slower ; no longer
-    /*
-    (prime - (interval_length - j) %prime) % prime
-    */
- // no
-    (j as i64 - interval_length as i64).rem_euclid(prime as i64) as usize // not sure why this works; yes, (interval - j) % prime = interval - i) % prime
+    } 
+    );
+    (j as i64 - interval_length as i64).rem_euclid(prime as i64) as usize 
+    // not sure why this works; yes, (interval - j) % prime = (interval - i) % prime
 }
 
 pub fn input() -> u32 {
@@ -145,7 +133,6 @@ pub fn special_leaves_type_1(
     mu: &[isize],
     phi: &[u64],
 ) {
-
     if (m1[b]) % 2 == 0 {
         m1[b] -= 1;
     }
@@ -153,11 +140,9 @@ pub fn special_leaves_type_1(
     while m1[b] > criterion {// *pp > reg_var.1 {
       let y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize ;
       if y >=intervals.1[intervals.0+1] {return;} 
-      //   if y +1  < intervals.1[intervals.0] {return;}
       let muvalue = mu[(m1[b] + 1) >> 1];
       if muvalue.abs() > pp as isize {
            let bit: i64 =  if b==0 {1} else {0};
-            // println!("y = {} phi[0] = {} query = {}, sum of phi and query = {}",y,phi[b],query,phi[b] as i64+query) ;
             let query = cnt_query(y - intervals.1[intervals.0],reg_var.3) as i64;
             *reg_var.2 -= muvalue.signum() as i64 * (phi[b] as i64 + query - bit);
          }
@@ -169,7 +154,7 @@ pub fn special_leaves_type_1(
 #[inline]
 pub fn hard(intervals: Intervals, reg_var: &mut RegVars, y: usize, d2_index: &mut usize) -> bool {
     if y < intervals.1[intervals.0 + 1] {
-        *reg_var.2 += cnt_query(y /*+ 1*/ - intervals.1[intervals.0], reg_var.3) as i64;
+        *reg_var.2 += cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
         *d2_index -= 1;
         return false;
     };
@@ -243,7 +228,7 @@ pub fn special_leaves_type_2(
     tt: &mut [u8],
     switch: &mut [bool],
 ) -> u32 {
-    let mut s2bprimes = 0;
+    let mut s2primes = 0;
     while index + 1 < *s2b_var.0 {
         let y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;
         match tt[index] {
@@ -265,12 +250,12 @@ pub fn special_leaves_type_2(
                 if (intervals.0 > 0 || reg_var.3[1] > 0) && hard {
                     break;
                 } else {
-                    s2bprimes += 1;
+                    s2primes += 1;
                 }
             }
         }
     }
-    s2bprimes
+    s2primes
 }
 
 #[inline]
@@ -293,31 +278,28 @@ pub fn p2(
     intervals: Intervals,
     reg_var: RegVars,
     mut p2_var: P2Vars,
-    /* u : &mut usize, mut v : usize  ,mut  w : usize,*/ block: &mut BitVec,
+    block: &mut BitVec,
     p: &[usize],
     a: usize,
 ) -> (u32, usize, usize) {
-    // let mut v = a; let mut w = *u + 1;
     let mut p2primes = 0;
-    loop {
-        if *p2_var.0 <= reg_var.1 {
-            *reg_var.2 += (p2_var.1 as i64 * (p2_var.1 - 1) as i64) >> 1;
-            return (p2primes, p2_var.1, p2_var.2);
-        }
+    while *p2_var.0 > reg_var.1 {
         if *p2_var.0 < p2_var.2 {
             p2_var.2 = cmp::max(2, *p2_var.0 - reg_var.1);
             sieve2(p2_var.2, *p2_var.0 + 1, p, block);
         }
         if !block[*p2_var.0 - p2_var.2 + 1] {
             let y = (reg_var.0 / (*p2_var.0 as u64)) as usize;
-            if y /*+1*/ >= intervals.1[intervals.0 + 1] {
-                return (p2primes, p2_var.1, p2_var.2);
-            }
+           if y < intervals.1[intervals.0 + 1] {
             *reg_var.2 -=
-                (cnt_query(y /*+ 1*/ - intervals.1[intervals.0], reg_var.3) as usize + a) as i64 - 1;
+                (cnt_query(y - intervals.1[intervals.0], reg_var.3) as usize + a) as i64 - 1;
             p2primes += 1;
             p2_var.1 += 1;
+        } else {
+              break; 
+           }
         }
         *p2_var.0 -= 2;
-    }
+}
+     (p2primes, p2_var.1, p2_var.2)
 }
