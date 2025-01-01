@@ -1,13 +1,8 @@
-extern crate mysilva;
-// extern crate chrono ;
 extern crate bit_vec;
 extern crate itertools;
-// use std::io;
-// use std::cell::OnceCell;
 use bit_vec::BitVec;
 use chrono::*;
 use mysilva::*;
-// use itertools::Itertools ;
 const SIGNBIT: i32 = 1 << 31;
 type Intervals<'a> = (usize, &'a [usize], usize);
 type RegVars<'a> = (u64, usize, &'a mut i64, &'a [i32]);
@@ -15,7 +10,6 @@ type P2Vars<'a> = (&'a mut usize, usize, usize);
 type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [usize]);
 fn main() {
     'foo: loop {
-        // let cell: OnceCell<u64> = OnceCell::new();
         let exponent = input();
         let m = 10u64.pow(exponent);
         let start: DateTime<Local> = Local::now();
@@ -87,6 +81,7 @@ fn main() {
             .iter_mut()
             .enumerate()
             .for_each(|(i, e)| *e = (i as i32 + 1) & !(i as i32));
+                    let mut p2primes;
         // start of main loop
         for interval in 0..num_intervals {
             let counter = &mut initial.clone();
@@ -131,11 +126,11 @@ fn main() {
                     continue;
                 } else if index == a {
                     let p2_var: P2Vars = (&mut u, v, w);
-                    let p2return = p2(
-                        here, this, p2_var, /*&mut u, v, w,*/ &mut block, &primes, a,
+                    (p2primes,v,w) = p2(
+                        here, this, p2_var, &mut block, &primes, a,
                     );
-                    let p2primes = p2return.0;
-                    (_, v, w) = p2return;
+                    // let p2primes = p2return.0;
+                    // (_, v, w) = p2return;
                     count -= phi[index] as i64 * p2primes as i64;
                 }
                 phi[index] += (counter[last] & !SIGNBIT) as u64;
