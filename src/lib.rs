@@ -164,7 +164,6 @@ pub fn hard(intervals: Intervals, reg_var: &mut RegVars, y: usize, d2_index: &mu
 #[inline]
 pub fn easy_sparse(
     index: usize,
-    // intervals: Intervals,
     reg_var: &mut RegVars,
     s2b_var: &mut S2bVars,
     y: usize,
@@ -178,7 +177,6 @@ pub fn easy_sparse(
         false
     } else if switch[index] {
         tt[index] = 2;
-        // hard(intervals, reg_var, y, s2b_var.0);
         false
     }
         else {
@@ -190,7 +188,6 @@ pub fn easy_sparse(
 #[inline]
 pub fn easy_clustered(
     index: usize,
-    // intervals: Intervals,
     reg_var: &mut RegVars,
     s2b_var: &mut S2bVars,
     y: usize,
@@ -214,7 +211,6 @@ pub fn easy_clustered(
         false
     } else if switch[index] {
         tt[index] = 2;
-        // hard(intervals, reg_var, y, s2b_var.0);
         false
     } else {
         switch[index] = true;
