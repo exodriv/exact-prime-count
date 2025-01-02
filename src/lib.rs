@@ -151,14 +151,8 @@ pub fn special_leaves_type_1(
 
 #[inline]
 pub fn hard(intervals: Intervals, reg_var: &mut RegVars, y: usize, d2_index: &mut usize) {
-    if y < intervals.1[intervals.0 + 1] {
         *reg_var.2 += cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
         *d2_index -= 1;
-    }
-    // false
-    // } else {
-    //     true
-    // }
 }
 
 #[inline]
@@ -246,16 +240,18 @@ pub fn special_leaves_type_2(
                 }
             }
             _ => {
-                hard(intervals, reg_var, y, s2b_var.0);
-                if (intervals.0 > 0 || reg_var.3[1] > 0) && y>= intervals.1[intervals.0+1] {
-                    // hard {
-                    break;
-                } else {
+                let bit = y<intervals.1[intervals.0 + 1];
+                if bit
+                {
+                    *reg_var.2 += cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
+                    *s2b_var.0 -= 1;
                     s2primes += 1;
                 }
+               else if intervals.0 > 0 || reg_var.3[1] > 0 {
+                    break;
+                } 
             }
         }
-    // } else {break;}
 }
     s2primes
 }
