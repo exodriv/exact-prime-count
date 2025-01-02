@@ -12,7 +12,7 @@ fn main() {
         let m = 10u64.pow(exponent);
         let start: DateTime<Local> = Local::now();
         println!("{:?}", start.format("%a %e %b %T ").to_string());
-        let beta = 0.00085;
+        let beta = 0.00088;
         let alpha = beta * (exponent as f64 * 10.0_f64.ln()).powi(3);
         let n = (alpha * (m as f64).cbrt() + 0.5).floor() as usize;
         let z = (10.0_f64.powf(exponent as f64 * 2.0 / 3.0) / alpha).floor() as usize + 1;
@@ -119,6 +119,9 @@ for i in 0..interval_length {
                             &mut switch,
                         );
                     }
+                    if !switch[index] {
+                        // astar= 0;
+                        continue;}
                     let s2primes = special_leaves_type_2(
                         index,
                         here,
@@ -128,8 +131,8 @@ for i in 0..interval_length {
                         &mut switch,
                     );
                     count += (s2primes as u64 * phi[index]) as i64;
-                } else if !switch[index] && index < a - 1 {
-                    continue;
+                // } else if !switch[index] && index < a - 1 {
+                //     continue;
                 } else if index == a {
                     let p2_var: P2Vars = (&mut u, v, w);
                     (p2primes,v,w) = p2(
