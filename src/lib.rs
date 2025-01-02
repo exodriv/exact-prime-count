@@ -224,6 +224,7 @@ pub fn special_leaves_type_2(
     let mut s2primes = 0;
     while *s2b_var.0   > index + 1 {
         let y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;
+        let bitn = y < reg_var.1;
         // if y < cmp::max(reg_var.1 , intervals.1[intervals.0+1]) {
         match tt[index] {
             0 => {
@@ -234,10 +235,22 @@ pub fn special_leaves_type_2(
                 }
             }
             1 => {
-                let easy_s: bool = easy_sparse(index, reg_var, s2b_var, y, tt, switch);
-                if easy_s {
+                if bitn {
+                // if y < reg_var.1 {
+                    let l = s2b_var.1[(y + 1) >> 1] - index + 1;
+                    *reg_var.2 += l as i64;
+                    *s2b_var.0 -= 1;
+                } else if switch[index] {
+                    tt[index] = 2;
+                }
+                else {
+                    switch[index] = true;
                     break;
                 }
+                // let easy_s: bool = easy_sparse(index, reg_var, s2b_var, y, tt, switch);
+                // if easy_s {
+                //     break;
+                // }
             }
             _ => {
                 let bit = y<intervals.1[intervals.0 + 1];
