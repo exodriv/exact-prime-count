@@ -164,7 +164,7 @@ pub fn hard(intervals: Intervals, reg_var: &mut RegVars, y: usize, d2_index: &mu
 #[inline]
 pub fn easy_sparse(
     index: usize,
-    intervals: Intervals,
+    // intervals: Intervals,
     reg_var: &mut RegVars,
     s2b_var: &mut S2bVars,
     y: usize,
@@ -178,7 +178,7 @@ pub fn easy_sparse(
         false
     } else if switch[index] {
         tt[index] = 2;
-        hard(intervals, reg_var, y, s2b_var.0);
+        // hard(intervals, reg_var, y, s2b_var.0);
         false
     }
         else {
@@ -190,7 +190,7 @@ pub fn easy_sparse(
 #[inline]
 pub fn easy_clustered(
     index: usize,
-    intervals: Intervals,
+    // intervals: Intervals,
     reg_var: &mut RegVars,
     s2b_var: &mut S2bVars,
     y: usize,
@@ -214,7 +214,7 @@ pub fn easy_clustered(
         false
     } else if switch[index] {
         tt[index] = 2;
-        hard(intervals, reg_var, y, s2b_var.0);
+        // hard(intervals, reg_var, y, s2b_var.0);
         false
     } else {
         switch[index] = true;
@@ -238,13 +238,13 @@ pub fn special_leaves_type_2(
         match tt[index] {
             0 => {
                 let easy_c: bool =
-                    easy_clustered(index, intervals, reg_var, s2b_var, y, tt, switch);
+                    easy_clustered(index, reg_var, s2b_var, y, tt, switch);
                 if easy_c {
                     break;
                 }
             }
             1 => {
-                let easy_s: bool = easy_sparse(index, intervals, reg_var, s2b_var, y, tt, switch);
+                let easy_s: bool = easy_sparse(index, reg_var, s2b_var, y, tt, switch);
                 if easy_s {
                     break;
                 }
