@@ -40,7 +40,7 @@ fn main() {
         let last = interval_length - 1;
         let num_intervals = (z / interval_length) + 1;
         let mut interval_boundaries: Vec<usize> = vec![0; num_intervals + 1];
-        let mut initial: Vec<i32> = vec![0; interval_length];
+        // let mut initial: Vec<i32> = vec![0; interval_length];
         let mut m1: Vec<usize> = vec![n; astar + 1];
         let mut phi: Vec<u64> = vec![0; a + 1];
         let mut tt: Vec<u8> = vec![0; a - 1];
@@ -74,14 +74,15 @@ fn main() {
                 count += (a - d2[index]) as i64;
             };
         });
-        let temp = vec![0; interval_length];
-        initial
-            .iter_mut()
-            .enumerate()
-            .for_each(|(i, e)| *e = (i as i32 + 1) & !(i as i32));
+        let mut initial = Vec::new();
+for i in 0..interval_length {
+    initial.push(i as i32+ 1 & !i as i32);
+}
+        // println!("initial = {:?}", initial);
                     let mut p2primes;
         // start of main loop
         for interval in 0..num_intervals {
+                let here: Intervals = (interval, &interval_boundaries, interval_length);
             let counter = &mut initial.clone();
             for index in 0..a + 1 {
                 match index {
@@ -101,7 +102,6 @@ fn main() {
                         offsets[index] =(offsets[index] as i64 - interval_length as i64).rem_euclid(primes[index] as i64) as usize;
                     },
                 }
-                let here: Intervals = (interval, &interval_boundaries, interval_length);
                 let mut this: RegVars = (m, n, &mut count, counter);
                 if index < astar {
                     special_leaves_type_1(index, here, this, &mut m1, primes[index + 1], &mu, &phi);
@@ -110,7 +110,6 @@ fn main() {
                 {
                     let mut s2b: S2bVars = (&mut d2[index], &pi, &primes);
                     if here.0 == 0b0 {
-                        this.3 = &temp;
                         special_leaves_type_2(
                             index,
                             here,
@@ -120,7 +119,6 @@ fn main() {
                             &mut switch,
                         );
                     }
-                    this.3 = counter;
                     let s2primes = special_leaves_type_2(
                         index,
                         here,

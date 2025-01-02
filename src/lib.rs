@@ -199,14 +199,13 @@ pub fn special_leaves_type_2(
                 }
             },
             _ => {
-                let bit = y<intervals.1[intervals.0 + 1];
-                if bit
+                if y<intervals.1[intervals.0 + 1]
                 {
                     *reg_var.2 += cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
                     *s2b_var.0 -= 1;
                     s2primes += 1;
                 }
-               else if intervals.0 > 0 || reg_var.3[1] > 0 {
+               else if intervals.0 > 0 || reg_var.3[1] >= 0 {
                     break;
                 } 
             },
