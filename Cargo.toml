@@ -22,4 +22,4 @@ name = "mysilva_bin"
 
 chrono="*"
 bit-vec="*"
-itertools="*"
+itertools="0.14.0"

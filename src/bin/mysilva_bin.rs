@@ -1,5 +1,3 @@
-extern crate bit_vec;
-extern crate itertools;
 use bit_vec::BitVec;
 use chrono::*;
 use mysilva::*;
@@ -89,8 +87,18 @@ fn main() {
                 match index {
                     0 => {},
                     _ => {
-                        offsets[index] =
-                            interval_clear(offsets[index], counter, interval_length, primes[index]);
+                        (offsets[index]..interval_length).step_by(primes[index]).for_each(|i| {
+                            let mut pos = i;
+                            if counter[pos] > 0 {
+                                counter[pos] |= SIGNBIT;
+                                while pos < interval_length {
+                                    counter[pos] -= 1;
+                                    pos |= pos + 1;
+                                }
+                            }
+                        }
+                        );
+                        offsets[index] =(offsets[index] as i64 - interval_length as i64).rem_euclid(primes[index] as i64) as usize;
                     },
                 }
                 let here: Intervals = (interval, &interval_boundaries, interval_length);
@@ -129,8 +137,6 @@ fn main() {
                     (p2primes,v,w) = p2(
                         here, this, p2_var, &mut block, &primes, a,
                     );
-                    // let p2primes = p2return.0;
-                    // (_, v, w) = p2return;
                     count -= phi[index] as i64 * p2primes as i64;
                 }
                 phi[index] += (counter[last] & !SIGNBIT) as u64;

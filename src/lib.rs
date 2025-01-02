@@ -1,6 +1,3 @@
-extern crate bit_vec;
-extern crate core;
-extern crate itertools;
 use bit_vec::BitVec;
 use std::cmp;
 use std::io;
@@ -27,7 +24,7 @@ pub fn cnt_query(mut pos: usize, counter: &[i32]) -> u32 {
     acc as u32
 }
 
-#[inline]
+/*#[inline]
 pub fn interval_clear(
     j: usize,
     counter: &mut [i32],
@@ -43,11 +40,12 @@ pub fn interval_clear(
                 pos |= pos + 1;
             }
         }
-    } 
+    }
     );
-    (j as i64 - interval_length as i64).rem_euclid(prime as i64) as usize 
+    (j as i64 - interval_length as i64).rem_euclid(prime as i64) as usize
     // not sure why this works; yes, (interval - j) % prime = (interval - i) % prime
 }
+*/
 
 pub fn input() -> u32 {
     println!("Please enter an integer from 1 to 18. The program will count the exact number of primes below this power of 10: ");
@@ -152,13 +150,15 @@ pub fn special_leaves_type_1(
 
 
 #[inline]
-pub fn hard(intervals: Intervals, reg_var: &mut RegVars, y: usize, d2_index: &mut usize) -> bool {
+pub fn hard(intervals: Intervals, reg_var: &mut RegVars, y: usize, d2_index: &mut usize) {
     if y < intervals.1[intervals.0 + 1] {
         *reg_var.2 += cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
         *d2_index -= 1;
-        return false;
-    };
-    true
+    }
+    // false
+    // } else {
+    //     true
+    // }
 }
 
 #[inline]
@@ -175,14 +175,16 @@ pub fn easy_sparse(
         let l = s2b_var.1[(y + 1) >> 1] - index + 1;
         *reg_var.2 += l as i64;
         *s2b_var.0 -= 1;
-    } else if !switch[index] {
-        switch[index] = true;
-        return true;
-    } else {
+        false
+    } else if switch[index] {
         tt[index] = 2;
         hard(intervals, reg_var, y, s2b_var.0);
+        false
     }
-    false
+        else {
+            switch[index] = true;
+        true
+    }
 }
 
 #[inline]
@@ -209,14 +211,15 @@ pub fn easy_clustered(
             *reg_var.2 += (l as u32 * (*s2b_var.0 - dprime) as u32) as i64;
             *s2b_var.0 = dprime;
         }
-    } else if !switch[index] {
-        switch[index] = true;
-        return true;
-    } else {
+        false
+    } else if switch[index] {
         tt[index] = 2;
         hard(intervals, reg_var, y, s2b_var.0);
+        false
+    } else {
+        switch[index] = true;
+        true
     }
-    false
 }
 
 #[inline]
@@ -229,8 +232,9 @@ pub fn special_leaves_type_2(
     switch: &mut [bool],
 ) -> u32 {
     let mut s2primes = 0;
-    while index + 1 < *s2b_var.0 {
+    while *s2b_var.0   > index + 1 {
         let y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;
+        // if y < cmp::max(reg_var.1 , intervals.1[intervals.0+1]) {
         match tt[index] {
             0 => {
                 let easy_c: bool =
@@ -246,15 +250,17 @@ pub fn special_leaves_type_2(
                 }
             }
             _ => {
-                let hard = hard(intervals, reg_var, y, s2b_var.0);
-                if (intervals.0 > 0 || reg_var.3[1] > 0) && hard {
+                hard(intervals, reg_var, y, s2b_var.0);
+                if (intervals.0 > 0 || reg_var.3[1] > 0) && y>= intervals.1[intervals.0+1] {
+                    // hard {
                     break;
                 } else {
                     s2primes += 1;
                 }
             }
         }
-    }
+    // } else {break;}
+}
     s2primes
 }
 
@@ -296,7 +302,7 @@ pub fn p2(
             p2primes += 1;
             p2_var.1 += 1;
         } else {
-              break; 
+              break;
            }
         }
         *p2_var.0 -= 2;
