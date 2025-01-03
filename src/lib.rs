@@ -138,11 +138,11 @@ pub fn special_leaves_type_1(
     while m1[b] > criterion {
       let y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize ;
       if y >=intervals.1[intervals.0+1] {return;} 
-      let muvalue = mu[(m1[b] + 1) >> 1];
-      if muvalue.abs() > pp as isize {
+      let mu_value = mu[(m1[b] + 1) >> 1];
+      if mu_value.abs() > pp as isize {
            let bit: i64 =  if b==0 {1} else {0};
             let query = cnt_query(y - intervals.1[intervals.0],reg_var.3) as i64;
-            *reg_var.2 -= muvalue.signum() as i64 * (phi[b] as i64 + query - bit);
+            *reg_var.2 -= mu_value.signum() as i64 * (phi[b] as i64 + query - bit);
          }
         m1[b] -= 2;
       }
@@ -155,56 +155,53 @@ pub fn special_leaves_type_2(
     reg_var: &mut RegVars,
     s2b_var: &mut S2bVars,
     tt: &mut [u8],
-) -> u32 {
+) -> u64 {
     let mut s2primes = 0;
     while *s2b_var.0   > index + 1 {
         let y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;
-        let bitn = y < reg_var.1;
+        let bit_n = y < reg_var.1;
         // if y < cmp::max(reg_var.1 , intervals.1[intervals.0+1]) {
         match tt[index] {
             0 => {
-                if bitn {
+                if bit_n {
                     let l = s2b_var.1[(y + 1) >> 1] - index + 1;
                     let term = reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[index + l] as u64);
-                    let dprime = s2b_var.1[((term + 1) >> 1) as usize];
-                    if s2b_var.2[dprime + 1] <= int_sqrt((reg_var.0 / s2b_var.2[index + 1] as u64) as usize)
-                        || dprime <= index
+                    let d_prime = s2b_var.1[((term + 1) >> 1) as usize];
+                    if s2b_var.2[d_prime + 1] <= int_sqrt((reg_var.0 / s2b_var.2[index + 1] as u64) as usize)
+                        || d_prime <= index
                     {
                         tt[index] = 1;
                         *reg_var.2 += l as i64;
                         *s2b_var.0 -= 1;
                     } else {
-                        *reg_var.2 += (l as u32 * (*s2b_var.0 - dprime) as u32) as i64;
-                        *s2b_var.0 = dprime;
+                        *reg_var.2 += (l as u32 * (*s2b_var.0 - d_prime) as u32) as i64;
+                        *s2b_var.0 = d_prime;
                     }
-                } else if intervals.0 == 0 { 
+                } 
+            else {
                     tt[index] = 2;
-                } else {
                     break;
                 }
             },
             1 => {
-                if bitn {
+                if bit_n {
                     let l = s2b_var.1[(y + 1) >> 1] - index + 1;
                     *reg_var.2 += l as i64;
                     *s2b_var.0 -= 1;
-                } else if intervals.0 == 0 {
-                    tt[index] = 2;
-                }
+                 }
                 else {
+                    tt[index] = 2;
                     break;
                 }
             },
-            _ => {
-                if y<intervals.1[intervals.0 + 1]
-                {
-                    *reg_var.2 += cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
-                    *s2b_var.0 -= 1;
-                    s2primes += 1;
-                }
-               else if intervals.0 > 0 || reg_var.3[1] >= 0 {
-                    break;
-                } 
+            _ => if y<intervals.1[intervals.0 + 1]
+            {
+                *reg_var.2 += cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
+                *s2b_var.0 -= 1;
+                s2primes += 1;
+            }
+           else { 
+                break;
             },
         }
 }

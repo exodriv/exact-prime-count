@@ -34,14 +34,14 @@ fn main() {
         }
         primes.truncate(pix + 1);
         let a = pi[(n + 1) >> 1];
-        let astar = pi[(int_sqrt(n) + 1) >> 1];
+        let a_star = pi[(int_sqrt(n) + 1) >> 1];
         let lc = (n as f64).log2().floor() as u8;
         let interval_length = (1 << lc) as usize;
         let last = interval_length - 1;
         let num_intervals = (z / interval_length) + 1;
         let mut interval_boundaries: Vec<usize> = vec![0; num_intervals + 1];
         // let mut initial: Vec<i32> = vec![0; interval_length];
-        let mut m1: Vec<usize> = vec![n; astar + 1];
+        let mut m1: Vec<usize> = vec![n; a_star + 1];
         let mut phi: Vec<u64> = vec![0; a + 1];
         let mut tt: Vec<u8> = vec![0; a - 1];
         let mut d2: Vec<usize> = vec![0; a - 1];
@@ -61,7 +61,7 @@ fn main() {
         let mut count = a as i64 - 1 - ((a as i64 * (a as i64 - 1)) >> 1);
         count += ordinary_leaves(n, &mu, &m);
         // count -= s1b0(n, &mu, m);
-        (astar..a - 1).for_each(|index| {
+        (a_star..a - 1).for_each(|index| {
             {
                 let pp = primes[index + 1];
                 let term = (m / (pp as u64 * pp as u64)) as usize;
@@ -102,13 +102,13 @@ for i in 0..interval_length {
                     },
                 }
                 let mut this: RegVars = (m, n, &mut count, counter);
-                if index < astar {
+                if index < a_star {
                     special_leaves_type_1(index, here, this, &mut m1, primes[index + 1], &mu, &phi);
                 }
                 else if index < a - 1
                 {
                     let mut s2b: S2bVars = (&mut d2[index], &pi, &primes);
-                    if here.0 == 0b0 {
+                    if interval == 0b0 {
                         special_leaves_type_2(
                             index,
                             here,
@@ -118,9 +118,6 @@ for i in 0..interval_length {
                         );
                         // continue;
                     }
-                    // if !switch[index] {
-                    //     // astar= 0;
-                    //     continue;}
                     let s2primes = special_leaves_type_2(
                         index,
                         here,
@@ -128,9 +125,10 @@ for i in 0..interval_length {
                         &mut s2b,
                         &mut tt,
                     );
-                    count += (s2primes as u64 * phi[index]) as i64;
-                // } else if !switch[index] && index < a - 1 {
-                //     continue;
+                    count += (s2primes * phi[index]) as i64;
+                }
+                else if interval == 0b0 && index < a - 1 {
+                        continue;
                 } else if index == a {
                     let p2_var: P2Vars = (&mut u, v, w);
                     (p2primes,v,w) = p2(
