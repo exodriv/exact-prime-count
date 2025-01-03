@@ -47,7 +47,6 @@ fn main() {
         let mut d2: Vec<usize> = vec![0; a - 1];
         let mut offsets: Vec<usize> = vec![0; a + 1];
         let mut block: BitVec = BitVec::from_elem(n + 3, false);
-        let mut switch: Vec<bool> = vec![false; a + 1];
         (1..num_intervals).for_each(|i| interval_boundaries[i] = i * interval_length);
         interval_boundaries[num_intervals] = z;
         let mut u = match exponent % 2 {
@@ -116,19 +115,18 @@ for i in 0..interval_length {
                             &mut this,
                             &mut s2b,
                             &mut tt,
-                            &mut switch,
                         );
+                        // continue;
                     }
-                    if !switch[index] {
-                        // astar= 0;
-                        continue;}
+                    // if !switch[index] {
+                    //     // astar= 0;
+                    //     continue;}
                     let s2primes = special_leaves_type_2(
                         index,
                         here,
                         &mut this,
                         &mut s2b,
                         &mut tt,
-                        &mut switch,
                     );
                     count += (s2primes as u64 * phi[index]) as i64;
                 // } else if !switch[index] && index < a - 1 {

@@ -155,7 +155,6 @@ pub fn special_leaves_type_2(
     reg_var: &mut RegVars,
     s2b_var: &mut S2bVars,
     tt: &mut [u8],
-    switch: &mut [bool],
 ) -> u32 {
     let mut s2primes = 0;
     while *s2b_var.0   > index + 1 {
@@ -178,10 +177,9 @@ pub fn special_leaves_type_2(
                         *reg_var.2 += (l as u32 * (*s2b_var.0 - dprime) as u32) as i64;
                         *s2b_var.0 = dprime;
                     }
-                } else if switch[index] {
+                } else if intervals.0 == 0 { 
                     tt[index] = 2;
                 } else {
-                    switch[index] = true;
                     break;
                 }
             },
@@ -190,11 +188,10 @@ pub fn special_leaves_type_2(
                     let l = s2b_var.1[(y + 1) >> 1] - index + 1;
                     *reg_var.2 += l as i64;
                     *s2b_var.0 -= 1;
-                } else if switch[index] {
+                } else if intervals.0 == 0 {
                     tt[index] = 2;
                 }
                 else {
-                    switch[index] = true;
                     break;
                 }
             },
