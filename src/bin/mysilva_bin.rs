@@ -115,7 +115,7 @@ for i in 0..interval_length {
                             here,
                             &mut this,
                             &mut s2b,
-                            &mut tt,
+                            &mut tt[index],
                         );
                         // continue;
                     }
@@ -124,7 +124,7 @@ for i in 0..interval_length {
                         here,
                         &mut this,
                         &mut s2b,
-                        &mut tt,
+                        &mut tt[index],
                     );
                     count += s2primes * phi[index];
                 }

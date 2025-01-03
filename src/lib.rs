@@ -156,14 +156,13 @@ pub fn special_leaves_type_2(
     intervals: Intervals,
     reg_var: &mut RegVars,
     s2b_var: &mut S2bVars,
-    tt: &mut [u8],
+    tt_index: &mut u8,
 ) -> i64 {
     let mut s2primes = 0;
     while *s2b_var.0   > index + 1 {
         let y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;
         let bit_n = y < reg_var.1;
-        // if y < cmp::max(reg_var.1 , intervals.1[intervals.0+1]) {
-        match tt[index] {
+        match tt_index {
             0 => {
                 if bit_n {
                     let l = s2b_var.1[(y + 1) >> 1] - index + 1;
@@ -172,7 +171,7 @@ pub fn special_leaves_type_2(
                     if s2b_var.2[d_prime + 1] <= int_sqrt((reg_var.0 / s2b_var.2[index + 1] as u64) as usize)
                         || d_prime <= index
                     {
-                        tt[index] = 1;
+                        *tt_index = 1u8;
                         *reg_var.2 += l as i64;
                         *s2b_var.0 -= 1;
                     } else {
@@ -181,7 +180,7 @@ pub fn special_leaves_type_2(
                     }
                 } 
             else {
-                    tt[index] = 2;
+                    *tt_index = 2u8;
                     break;
                 }
             },
@@ -192,7 +191,7 @@ pub fn special_leaves_type_2(
                     *s2b_var.0 -= 1;
                  }
                 else {
-                    tt[index] = 2;
+                    *tt_index = 2u8;
                     break;
                 }
             },
