@@ -84,7 +84,7 @@ for i in 0..interval_length {
         for interval in 0..num_intervals {
                 let here: Intervals = (interval, &interval_boundaries, interval_length);
             let counter = &mut initial.clone();
-            for index in 0..a + 1 {
+            /*'bar:*/ for index in 0..=a {
                 match index {
                     0 => {},
                     _ => {
@@ -109,32 +109,19 @@ for i in 0..interval_length {
                 else if index < a - 1
                 {
                     let mut s2b: S2bVars = (&mut d2[index], &pi, &primes);
-                    if interval == 0b0 {
-                        special_leaves_type_2(
-                            index,
-                            here,
-                            &mut this,
-                            &mut s2b,
-                            &mut tt[index],
-                        );
-                        // continue;
+                    if here.0 == 0b0 {
+                        special_leaves_type_2(index, here, &mut this, &mut s2b, &mut tt[index],);
+                        // continue 'bar;
                     }
-                    let s2primes = special_leaves_type_2(
-                        index,
-                        here,
-                        &mut this,
-                        &mut s2b,
-                        &mut tt[index],
-                    );
-                    count += s2primes * phi[index];
+                    let s2primes = special_leaves_type_2(index, here, &mut this, &mut s2b, &mut tt[index],);
+                    *this.2 += s2primes * phi[index];
                 }
-                else if interval == 0b0 && index < a - 1 {
-                        continue;
-                } else if index == a {
+                // else if interval == 0b0 && index < a - 1 {
+                //         continue 'bar;
+                // } 
+                else if index == a {
                     let p2_var: P2Vars = (&mut u, v, w);
-                    (p2primes,v,w) = p2(
-                        here, this, p2_var, &mut block, &primes, a,
-                    );
+                    (p2primes,v,w) = p2(here, this, p2_var, &mut block, &primes, a,);
                     count -= phi[index] * p2primes as i64;
                 }
                 phi[index] += (counter[last] & !SIGNBIT) as i64;

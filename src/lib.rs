@@ -122,15 +122,7 @@ pub fn ordinary_leaves(n: usize, mu: &[isize], m: &u64) -> i64 {
 }
 
 #[inline]
-pub fn special_leaves_type_1(
-    b: usize,
-    intervals: Intervals,
-    reg_var: RegVars,
-    m1: &mut [usize],
-    pp: usize,
-    mu: &[isize],
-    phi: &[i64],
-) {
+pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m1: &mut [usize], pp: usize, mu: &[isize], phi: &[i64],) {
     // println!("b= {}, phi = {:?}",b,phi);
     if (m1[b]) % 2 == 0 {
         m1[b] -= 1;
@@ -151,13 +143,7 @@ pub fn special_leaves_type_1(
       }
 
 #[inline]
-pub fn special_leaves_type_2(
-    index: usize,
-    intervals: Intervals,
-    reg_var: &mut RegVars,
-    s2b_var: &mut S2bVars,
-    tt_index: &mut u8,
-) -> i64 {
+pub fn special_leaves_type_2(index: usize, intervals: Intervals, reg_var: &mut RegVars, s2b_var: &mut S2bVars, tt_index: &mut u8,) -> i64 {
     let mut s2primes = 0;
     while *s2b_var.0   > index + 1 {
         let y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;
@@ -171,7 +157,7 @@ pub fn special_leaves_type_2(
                     if s2b_var.2[d_prime + 1] <= int_sqrt((reg_var.0 / s2b_var.2[index + 1] as u64) as usize)
                         || d_prime <= index
                     {
-                        *tt_index = 1u8;
+                        *tt_index = 1;
                         *reg_var.2 += l as i64;
                         *s2b_var.0 -= 1;
                     } else {
@@ -180,7 +166,7 @@ pub fn special_leaves_type_2(
                     }
                 } 
             else {
-                    *tt_index = 2u8;
+                    // *tt_index = 2u8;
                     break;
                 }
             },
@@ -191,7 +177,7 @@ pub fn special_leaves_type_2(
                     *s2b_var.0 -= 1;
                  }
                 else {
-                    *tt_index = 2u8;
+                    *tt_index = 2;
                     break;
                 }
             },
