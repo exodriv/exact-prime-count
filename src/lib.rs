@@ -129,21 +129,23 @@ pub fn special_leaves_type_1(
     m1: &mut [usize],
     pp: usize,
     mu: &[isize],
-    phi: &[u64],
+    phi: &[i64],
 ) {
+    // println!("b= {}, phi = {:?}",b,phi);
     if (m1[b]) % 2 == 0 {
         m1[b] -= 1;
     }
     let criterion = reg_var.1 / pp;
     while m1[b] > criterion {
-      let y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize ;
-      if y >=intervals.1[intervals.0+1] {return;} 
-      let mu_value = mu[(m1[b] + 1) >> 1];
-      if mu_value.abs() > pp as isize {
-           let bit: i64 =  if b==0 {1} else {0};
-            let query = cnt_query(y - intervals.1[intervals.0],reg_var.3) as i64;
-            *reg_var.2 -= mu_value.signum() as i64 * (phi[b] as i64 + query - bit);
-         }
+        let y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize;
+        let mu_value = mu[(m1[b] + 1) >> 1];
+        if mu_value.abs() > pp as isize {
+        if y >= intervals.1[intervals.0 + 1] { return; } else {
+            let bit: i64 = if b == 0 { 1 } else { 0 };
+            let query = cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
+            *reg_var.2 -= mu_value.signum() as i64 * (phi[b] + query - bit);
+        }
+    }
         m1[b] -= 2;
       }
       }
@@ -155,7 +157,7 @@ pub fn special_leaves_type_2(
     reg_var: &mut RegVars,
     s2b_var: &mut S2bVars,
     tt: &mut [u8],
-) -> u64 {
+) -> i64 {
     let mut s2primes = 0;
     while *s2b_var.0   > index + 1 {
         let y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;

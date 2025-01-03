@@ -35,6 +35,7 @@ fn main() {
         primes.truncate(pix + 1);
         let a = pi[(n + 1) >> 1];
         let a_star = pi[(int_sqrt(n) + 1) >> 1];
+        // println!("a_star = {:?}", a_star);
         let lc = (n as f64).log2().floor() as u8;
         let interval_length = (1 << lc) as usize;
         let last = interval_length - 1;
@@ -42,7 +43,7 @@ fn main() {
         let mut interval_boundaries: Vec<usize> = vec![0; num_intervals + 1];
         // let mut initial: Vec<i32> = vec![0; interval_length];
         let mut m1: Vec<usize> = vec![n; a_star + 1];
-        let mut phi: Vec<u64> = vec![0; a + 1];
+        let mut phi: Vec<i64> = vec![0; a + 1];
         let mut tt: Vec<u8> = vec![0; a - 1];
         let mut d2: Vec<usize> = vec![0; a - 1];
         let mut offsets: Vec<usize> = vec![0; a + 1];
@@ -125,7 +126,7 @@ for i in 0..interval_length {
                         &mut s2b,
                         &mut tt,
                     );
-                    count += (s2primes * phi[index]) as i64;
+                    count += s2primes * phi[index];
                 }
                 else if interval == 0b0 && index < a - 1 {
                         continue;
@@ -134,9 +135,9 @@ for i in 0..interval_length {
                     (p2primes,v,w) = p2(
                         here, this, p2_var, &mut block, &primes, a,
                     );
-                    count -= phi[index] as i64 * p2primes as i64;
+                    count -= phi[index] * p2primes as i64;
                 }
-                phi[index] += (counter[last] & !SIGNBIT) as u64;
+                phi[index] += (counter[last] & !SIGNBIT) as i64;
             }
         }
         //end of main loop
