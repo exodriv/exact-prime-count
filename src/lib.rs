@@ -144,9 +144,9 @@ pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m
 
 #[inline]
 pub fn special_leaves_type_2(index: usize, intervals: Intervals, reg_var: &mut RegVars, s2b_var: &mut S2bVars, tt_index: &mut u8,) -> i64 {
-    let mut s2primes = 0;
+    let mut s2_primes = 0;
     while *s2b_var.0   > index + 1 {
-        let y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;
+        let mut y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;
         let bit_n = y < reg_var.1;
         match tt_index {
             0 => {
@@ -164,10 +164,10 @@ pub fn special_leaves_type_2(index: usize, intervals: Intervals, reg_var: &mut R
                         *reg_var.2 += (l as u32 * (*s2b_var.0 - d_prime) as u32) as i64;
                         *s2b_var.0 = d_prime;
                     }
-                } 
-            else {
+                } else {
                     // *tt_index = 2u8;
-                    break;
+                    return s2_primes;
+                    // break;
                 }
             },
             1 => {
@@ -175,24 +175,28 @@ pub fn special_leaves_type_2(index: usize, intervals: Intervals, reg_var: &mut R
                     let l = s2b_var.1[(y + 1) >> 1] - index + 1;
                     *reg_var.2 += l as i64;
                     *s2b_var.0 -= 1;
-                 }
-                else {
+                } else {
                     *tt_index = 2;
-                    break;
+                    return s2_primes;
+                    // break;
                 }
             },
-            _ => if y<intervals.1[intervals.0 + 1]
-            {
-                *reg_var.2 += cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
-                *s2b_var.0 -= 1;
-                s2primes += 1;
+            _ => {
+             y -= intervals.1[intervals.0];
+            if y < intervals.2
+                {
+                    *reg_var.2 += cnt_query(y, reg_var.3) as i64;
+                    *s2b_var.0 -= 1;
+                    s2_primes += 1;
+                }
+            else {
+                return s2_primes;
+            // break;
             }
-           else { 
-                break;
-            },
+        },
         }
 }
-    s2primes
+    s2_primes
 }
 
 #[inline]
