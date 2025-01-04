@@ -128,14 +128,14 @@ pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m
         m1[b] -= 1;
     }
     let criterion = reg_var.1 / pp;
+            let fudge: i64 = if b == 0 { 1 } else { 0 };
     while m1[b] > criterion {
         let y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize;
         let mu_value = mu[(m1[b] + 1) >> 1];
-        if mu_value.abs() > pp as isize {
+        if /*mu_value.abs() >*/ pp < mu_value.abs() as usize {
         if y >= intervals.1[intervals.0 + 1] { return; } else {
-            let bit: i64 = if b == 0 { 1 } else { 0 };
             let query = cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
-            *reg_var.2 -= mu_value.signum() as i64 * (phi[b] + query - bit);
+            *reg_var.2 -= mu_value.signum() as i64 * (phi[b] + query - fudge);
         }
     }
         m1[b] -= 2;
@@ -143,21 +143,19 @@ pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m
       }
 
 #[inline]
-pub fn special_leaves_type_2(index: usize, intervals: Intervals, reg_var: &mut RegVars, s2b_var: &mut S2bVars, tt_index: &mut u8,) -> i64 {
+pub fn special_leaves_type_2(index: usize, intervals: Intervals, reg_var: &mut RegVars, s2b_var: &mut S2bVars, tt_index: &mut u8,pp:u64) -> i64 {
     let mut s2_primes = 0;
-    let pp = s2b_var.2[index + 1] as u64;
+let term2 = int_sqrt((reg_var.0/pp) as usize);
     while *s2b_var.0   > index + 1 {
-        // let mut y = (reg_var.0/term2) as usize;
-        let mut y = (reg_var.0 / (pp/*(s2b_var.2[index + 1] as u64*/ * s2b_var.2[*s2b_var.0] as u64)) as usize;
+        let mut y = (reg_var.0 / (pp * s2b_var.2[*s2b_var.0] as u64)) as usize;
         let bit_n = y < reg_var.1;
         match tt_index {
             0 => {
                 if bit_n {
                     let l = s2b_var.1[(y + 1) >> 1] - index + 1;
                     let term = reg_var.0/(pp * s2b_var.2[index + l] as u64);
-                    // let term = reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[index + l] as u64);
                     let d_prime = s2b_var.1[((term + 1) >> 1) as usize];
-                    if s2b_var.2[d_prime + 1] <= int_sqrt((reg_var.0 /pp /*s2b_var.2[index + 1] as u64*/) as usize)
+                    if s2b_var.2[d_prime + 1] <= term2 // int_sqrt((reg_var.0 /pp /*s2b_var.2[index + 1] as u64*/) as usize)
                         || d_prime <= index
                     {
                         *tt_index = 1;

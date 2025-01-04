@@ -62,18 +62,12 @@ fn main() {
         let mut count = a as i64 - 1 - ((a as i64 * (a as i64 - 1)) >> 1);
         count += ordinary_leaves(n, &mu, &m);
         // count -= s1b0(n, &mu, m);
-        (a_star..a - 1).for_each(|index| {
-            {
-                let pp = primes[index + 1];
-                let term = (m / (pp as u64 * pp as u64)) as usize;
-                d2[index] = match term {
-                    term if term <= pp => index + 1,
-                    term if term < n => pi[(term + 1) >> 1],
-                    _ => a,
-                };
-                count += (a - d2[index]) as i64;
-            };
-        });
+        // (a_star..a - 1).for_each(|_index| {
+        //     {
+        //
+        //
+        //     };
+        // });
         let mut initial = Vec::new();
 for i in 0..interval_length {
     initial.push(i as i32+ 1 & !i as i32);
@@ -109,11 +103,18 @@ for i in 0..interval_length {
                 else if index < a - 1
                 {
                     let mut s2b: S2bVars = (&mut d2[index], &pi, &primes);
+                        let pp = primes[index + 1] as u64;
                     if here.0 == 0b0 {
-                        special_leaves_type_2(index, here, &mut this, &mut s2b, &mut tt[index],);
-                        // continue 'bar;
+                        let term = (m  / (pp * pp )) as usize;
+                        *s2b.0 = match term {
+                            term if term <= pp as usize => index + 1,
+                            term if term < n => pi[(term + 1) >> 1],
+                            _ => a,
+                        };
+                        *this.2 += (a - *s2b.0) as i64;
+                        special_leaves_type_2(index, here, &mut this, &mut s2b, &mut tt[index],pp);
                     }
-                    let s2primes = special_leaves_type_2(index, here, &mut this, &mut s2b, &mut tt[index],);
+                    let s2primes = special_leaves_type_2(index, here, &mut this, &mut s2b, &mut tt[index],pp);
                     *this.2 += s2primes * phi[index];
                 }
                 // else if interval == 0b0 && index < a - 1 {
