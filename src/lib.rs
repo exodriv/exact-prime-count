@@ -145,16 +145,19 @@ pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m
 #[inline]
 pub fn special_leaves_type_2(index: usize, intervals: Intervals, reg_var: &mut RegVars, s2b_var: &mut S2bVars, tt_index: &mut u8,) -> i64 {
     let mut s2_primes = 0;
+    let pp = s2b_var.2[index + 1] as u64;
     while *s2b_var.0   > index + 1 {
-        let mut y = (reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[*s2b_var.0] as u64)) as usize;
+        // let mut y = (reg_var.0/term2) as usize;
+        let mut y = (reg_var.0 / (pp/*(s2b_var.2[index + 1] as u64*/ * s2b_var.2[*s2b_var.0] as u64)) as usize;
         let bit_n = y < reg_var.1;
         match tt_index {
             0 => {
                 if bit_n {
                     let l = s2b_var.1[(y + 1) >> 1] - index + 1;
-                    let term = reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[index + l] as u64);
+                    let term = reg_var.0/(pp * s2b_var.2[index + l] as u64);
+                    // let term = reg_var.0 / (s2b_var.2[index + 1] as u64 * s2b_var.2[index + l] as u64);
                     let d_prime = s2b_var.1[((term + 1) >> 1) as usize];
-                    if s2b_var.2[d_prime + 1] <= int_sqrt((reg_var.0 / s2b_var.2[index + 1] as u64) as usize)
+                    if s2b_var.2[d_prime + 1] <= int_sqrt((reg_var.0 /pp /*s2b_var.2[index + 1] as u64*/) as usize)
                         || d_prime <= index
                     {
                         *tt_index = 1;
