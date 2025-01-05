@@ -32,7 +32,7 @@ fn main() {
             println!("{:?}", end - start);
             continue;
         }
-        primes.truncate(pix + 1);
+        primes.truncate(pix + 2);
         let a = pi[(n + 1) >> 1];
         let a_star = pi[(int_sqrt(n) + 1) >> 1];
         // println!("a_star = {:?}", a_star);
@@ -79,6 +79,7 @@ for i in 0..interval_length {
                 let here: Intervals = (interval, &interval_boundaries, interval_length);
             let counter = &mut initial.clone();
             /*'bar:*/ for index in 0..=a {
+                        let pp = primes[index + 1] as u64;
                 match index {
                     0 => {},
                     _ => {
@@ -98,12 +99,11 @@ for i in 0..interval_length {
                 }
                 let mut this: RegVars = (m, n, &mut count, counter);
                 if index < a_star {
-                    special_leaves_type_1(index, here, this, &mut m1, primes[index + 1], &mu, &phi);
+                    special_leaves_type_1(index, here, this, &mut m1, pp as usize, &mu, &phi);
                 }
                 else if index < a - 1
                 {
                     let mut s2b: S2bVars = (&mut d2[index], &pi, &primes);
-                        let pp = primes[index + 1] as u64;
                     if here.0 == 0b0 {
                         let term = (m  / (pp * pp )) as usize;
                         *s2b.0 = match term {
