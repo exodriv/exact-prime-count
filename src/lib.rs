@@ -129,12 +129,15 @@ pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m
     }
     let criterion = reg_var.1 / pp;
             let fudge: i64 = if b == 0 { 1 } else { 0 };
+    let mut y; 
+    let mut mu_value ;
+    let mut query;
     while m1[b] > criterion {
-        let y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize;
-        let mu_value = mu[(m1[b] + 1) >> 1];
+         y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize;
+         mu_value = mu[(m1[b] + 1) >> 1];
         if /*mu_value.abs() >*/ pp < mu_value.abs() as usize {
         if y >= intervals.1[intervals.0 + 1] { return; } else {
-            let query = cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
+            query = cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
             *reg_var.2 -= mu_value.signum() as i64 * (phi[b] + query - fudge);
         }
     }
