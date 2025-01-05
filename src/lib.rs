@@ -105,16 +105,15 @@ pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m
         m1[b] -= 1;
     }
     let criterion = reg_var.1 / pp as usize;
-            // let fudge: i64 = if b == 0 { 0} else { 0 };
-    let mut y; 
+    let mut y;
     let mut mu_value ;
     let mut query;
     while m1[b] > criterion {
-         y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize;
          mu_value = mu[(m1[b] + 1) >> 1];
         if  pp < mu_value.abs()  {
-        if y >= intervals.1[intervals.0 + 1] { return; } else {
-            query = cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
+         y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize - intervals.1[intervals.0];
+        if y >= intervals.2/*intervals.1[intervals.0 + 1]*/ { return; } else {
+            query = cnt_query(y /*- intervals.1[intervals.0]*/, reg_var.3) as i64;
             *reg_var.2 -= mu_value.signum() as i64 * (phi[b] + query );
         }
     }
@@ -181,15 +180,15 @@ let term2 = int_sqrt((reg_var.0/pp) as usize);
 }
 
 #[inline]
-pub fn sieve2(x: usize, y: usize, p: &[usize], block: &mut BitVec) {
+pub fn sieve2(begin: usize, finish: usize, primes: &[usize], block: &mut BitVec) {
     block.clear();
     let mut i = 1;
-    while p[i] * p[i] <= y {
-        let mut offset = (1 - x as i64).rem_euclid(p[i] as i64) as usize;
-        //    (offset..2+y-x).step(p[i]).foreach(|j| block.set(j,true) ) ;// more than twice the time - map/collect makes no difference
-        while offset <= 1 + (y - x) {
+    while primes[i] * primes[i] <= finish {
+        let mut offset = (1 - begin as i64).rem_euclid(primes[i] as i64) as usize;
+           // (offset..2+finish-begin).step_by(primes[i]).for_each(|j| block.set(j,true) ) ;
+        while offset <= 1 + (finish - begin) {
             block.set(offset, true);
-            offset += p[i];
+            offset += primes[i];
         }
         i += 1;
     }
@@ -201,14 +200,14 @@ pub fn p2(
     reg_var: RegVars,
     mut p2_var: P2Vars,
     block: &mut BitVec,
-    p: &[usize],
+    primes: &[usize],
     a: usize,
 ) -> (u32, usize, usize) {
     let mut p2primes = 0;
     while *p2_var.0 > reg_var.1 {
         if *p2_var.0 < p2_var.2 {
             p2_var.2 = cmp::max(2, *p2_var.0 - reg_var.1);
-            sieve2(p2_var.2, *p2_var.0 + 1, p, block);
+            sieve2(p2_var.2, *p2_var.0 + 1, primes, block);
         }
         if !block[*p2_var.0 - p2_var.2 + 1] {
             let y = (reg_var.0 / (*p2_var.0 as u64)) as usize;

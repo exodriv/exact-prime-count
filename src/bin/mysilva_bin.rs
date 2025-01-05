@@ -22,7 +22,7 @@ fn main() {
         if exponent <= 7 {
             ll = (m as usize - 1) >> 1;
         }
-        let mut primes: Vec<usize> = vec![1; ll + 1];
+        let mut primes = vec![1; ll + 1];
         let mut mu: Vec<isize> = vec![1; ll + 1];
         let mut pi: Vec<usize> = vec![0; ll + 1];
         let pix = initialize_arrays(ll, &mut mu, &mut pi, &mut primes);
@@ -62,17 +62,6 @@ fn main() {
         let mut w = u + 1;
         let mut count = a as i64 - 1 - ((a as i64 * (a as i64 - 1)) >> 1);
         count += ordinary_leaves(n, &mu, &m);
-        // count -= s1b0(n, &mu, m);
-        // (a_star..a - 1).for_each(|_index| {
-        //     {
-        //
-        //
-        //     };
-        // });
-//         let mut initial = Vec::new();
-// for i in 0..interval_length {
-//     initial.push(i as i32+ 1 & !i as i32);
-// }
         let initial = (0..interval_length as i32)
             .map(|i| i + 1 & !i)
             .collect::<Vec<i32>>();
@@ -81,13 +70,14 @@ fn main() {
         // start of main loop
         for interval in 0..num_intervals {
                 let here: Intervals = (interval, &interval_boundaries, interval_length);
-            let counter = &mut initial.clone();
-            /*'bar:*/ for index in 0..=a {
+            let mut counter = initial.clone();
+            for index in 0..=a {
                         let pp: u64 = primes[index + 1] as u64;
                 match index {
                     0 => {},
                     _ => {
-                        (offsets[index]..interval_length).step_by(primes[index]).for_each(|i| {
+                        let mut i = offsets[index];
+                        while i < interval_length {
                             let mut pos = i;
                             if counter[pos] > 0 {
                                 counter[pos] |= SIGNBIT;
@@ -96,12 +86,12 @@ fn main() {
                                     pos |= pos + 1;
                                 }
                             }
+                            i += primes[index];
                         }
-                        );
-                        offsets[index] =(offsets[index] as i64 - interval_length as i64).rem_euclid(primes[index] as i64) as usize;
+                        offsets[index] = i - interval_length  ; 
                     },
                 }
-                let mut this: RegVars = (m, n, &mut count, counter);
+                let mut this: RegVars = (m, n, &mut count, &counter);
                 if index < a_star {
                     special_leaves_type_1(index, here, this, &mut m1, pp as isize, &mu, &phi);
                 }
