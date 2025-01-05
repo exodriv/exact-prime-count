@@ -24,29 +24,6 @@ pub fn cnt_query(mut pos: usize, counter: &[i32]) -> u32 {
     acc as u32
 }
 
-/*#[inline]
-pub fn interval_clear(
-    j: usize,
-    counter: &mut [i32],
-    interval_length: usize,
-    prime: usize,
-) -> usize {
-    (j..interval_length).step_by(prime).for_each(|i| {
-        let mut pos = i;
-        if counter[pos] > 0 {
-            counter[pos] |= SIGNBIT;
-            while pos < interval_length {
-                counter[pos] -= 1;
-                pos |= pos + 1;
-            }
-        }
-    }
-    );
-    (j as i64 - interval_length as i64).rem_euclid(prime as i64) as usize
-    // not sure why this works; yes, (interval - j) % prime = (interval - i) % prime
-}
-*/
-
 pub fn input() -> u32 {
     println!("Please enter an integer from 1 to 18. The program will count the exact number of primes below this power of 10: ");
     let mut exponent = String::new();
@@ -122,23 +99,23 @@ pub fn ordinary_leaves(n: usize, mu: &[isize], m: &u64) -> i64 {
 }
 
 #[inline]
-pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m1: &mut [usize], pp: usize, mu: &[isize], phi: &[i64],) {
+pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m1: &mut [usize], pp: isize, mu: &[isize], phi: &[i64],) {
     // println!("b= {}, phi = {:?}",b,phi);
     if (m1[b]) % 2 == 0 {
         m1[b] -= 1;
     }
-    let criterion = reg_var.1 / pp;
-            let fudge: i64 = if b == 0 { 1 } else { 0 };
+    let criterion = reg_var.1 / pp as usize;
+            // let fudge: i64 = if b == 0 { 0} else { 0 };
     let mut y; 
     let mut mu_value ;
     let mut query;
     while m1[b] > criterion {
          y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize;
          mu_value = mu[(m1[b] + 1) >> 1];
-        if /*mu_value.abs() >*/ pp < mu_value.abs() as usize {
+        if  pp < mu_value.abs()  {
         if y >= intervals.1[intervals.0 + 1] { return; } else {
             query = cnt_query(y - intervals.1[intervals.0], reg_var.3) as i64;
-            *reg_var.2 -= mu_value.signum() as i64 * (phi[b] + query - fudge);
+            *reg_var.2 -= mu_value.signum() as i64 * (phi[b] + query );
         }
     }
         m1[b] -= 2;

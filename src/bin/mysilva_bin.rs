@@ -1,5 +1,5 @@
 use bit_vec::BitVec;
-use chrono::*;
+use chrono::{DateTime,Local};
 use mysilva::*;
 const SIGNBIT: i32 = 1 << 31;
 type Intervals<'a> = (usize, &'a [usize], usize);
@@ -42,6 +42,7 @@ fn main() {
         let num_intervals = (z / interval_length) + 1;
         let mut m1: Vec<usize> = vec![n; a_star + 1];
         let mut phi: Vec<i64> = vec![0; a + 1];
+        phi[0]=-1;
         let mut tt: Vec<u8> = vec![0; a - 1];
         let mut d2: Vec<usize> = vec![0; a - 1];
         let mut offsets: Vec<usize> = vec![0; a + 1];
@@ -49,7 +50,7 @@ fn main() {
         let mut interval_boundaries = (0..num_intervals).map(|i| i * interval_length)
             .collect::<Vec<usize>>();
         interval_boundaries.push(z);
-        println!("interval_boundaries {:?}", interval_boundaries);
+        // println!("interval_boundaries {:?}", interval_boundaries);
         let mut u = match exponent % 2 {
             0 => 10usize.pow(exponent / 2) - 1,
             _ => 10.0_f64.powf(exponent as f64 / 2.0).floor() as usize,
@@ -102,7 +103,7 @@ fn main() {
                 }
                 let mut this: RegVars = (m, n, &mut count, counter);
                 if index < a_star {
-                    special_leaves_type_1(index, here, this, &mut m1, pp as usize, &mu, &phi);
+                    special_leaves_type_1(index, here, this, &mut m1, pp as isize, &mu, &phi);
                 }
                 else if index < a - 1
                 {
