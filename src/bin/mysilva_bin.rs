@@ -40,16 +40,15 @@ fn main() {
         let interval_length = (1 << lc) as usize;
         let last = interval_length - 1;
         let num_intervals = (z / interval_length) + 1;
-        let mut interval_boundaries: Vec<usize> = vec![0; num_intervals + 1];
-        // let mut initial: Vec<i32> = vec![0; interval_length];
         let mut m1: Vec<usize> = vec![n; a_star + 1];
         let mut phi: Vec<i64> = vec![0; a + 1];
         let mut tt: Vec<u8> = vec![0; a - 1];
         let mut d2: Vec<usize> = vec![0; a - 1];
         let mut offsets: Vec<usize> = vec![0; a + 1];
         let mut block: BitVec = BitVec::from_elem(n + 3, false);
-        (1..num_intervals).for_each(|i| interval_boundaries[i] = i * interval_length);
-        interval_boundaries[num_intervals] = z;
+        let mut interval_boundaries = (0..num_intervals).map(|i| i * interval_length)
+            .collect::<Vec<usize>>();
+        interval_boundaries.push(z);
         let mut u = match exponent % 2 {
             0 => 10usize.pow(exponent / 2) - 1,
             _ => 10.0_f64.powf(exponent as f64 / 2.0).floor() as usize,
@@ -68,10 +67,13 @@ fn main() {
         //
         //     };
         // });
-        let mut initial = Vec::new();
-for i in 0..interval_length {
-    initial.push(i as i32+ 1 & !i as i32);
-}
+//         let mut initial = Vec::new();
+// for i in 0..interval_length {
+//     initial.push(i as i32+ 1 & !i as i32);
+// }
+        let initial = (0..interval_length as i32)
+            .map(|i| i + 1 & !i)
+            .collect::<Vec<i32>>();
         // println!("initial = {:?}", initial);
                     let mut p2primes;
         // start of main loop
@@ -79,7 +81,7 @@ for i in 0..interval_length {
                 let here: Intervals = (interval, &interval_boundaries, interval_length);
             let counter = &mut initial.clone();
             /*'bar:*/ for index in 0..=a {
-                        let pp = primes[index + 1] as u64;
+                        let pp: u64 = primes[index + 1] as u64;
                 match index {
                     0 => {},
                     _ => {
