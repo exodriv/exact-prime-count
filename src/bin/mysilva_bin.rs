@@ -49,6 +49,7 @@ fn main() {
         let mut interval_boundaries = (0..num_intervals).map(|i| i * interval_length)
             .collect::<Vec<usize>>();
         interval_boundaries.push(z);
+        println!("interval_boundaries {:?}", interval_boundaries);
         let mut u = match exponent % 2 {
             0 => 10usize.pow(exponent / 2) - 1,
             _ => 10.0_f64.powf(exponent as f64 / 2.0).floor() as usize,
