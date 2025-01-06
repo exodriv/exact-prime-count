@@ -62,7 +62,6 @@ fn main() {
         let initial = (0..interval_length as i32)
             .map(|i| i + 1 & !i)
             .collect::<Vec<i32>>();
-        // println!("initial = {:?}", initial);
                     let mut p2primes;
         // start of main loop
         for interval in 0..num_intervals {
