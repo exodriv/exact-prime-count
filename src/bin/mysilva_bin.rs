@@ -1,4 +1,3 @@
-// use bit_vec::BitVec;
 use chrono::{DateTime,Local};
 use mysilva::*;
 const SIGNBIT: i32 = 1 << 31;
@@ -23,11 +22,9 @@ fn main() {
         if exponent <= 7 {
             ll = (m as usize -1) >> 1;
         }
-        // let mut primes = vec![1; ll + 1];
         let mut mu: Vec<isize> = vec![1; ll + 2];
         let mut pi: Vec<usize> = vec![0; ll + 2];
         let pix = initialize_arrays(ll, &mut mu, &mut pi, &big_primes);
-        // primes.truncate(pix + 1);
         // println!("mu = {:?}, pi = {:?}", mu,pi);
         if exponent <= 7 {
             println!("prime count = {} ", pix);
@@ -48,7 +45,6 @@ fn main() {
         let mut tt: Vec<u8> = vec![0; a - 1];
         let mut d2: Vec<usize> = vec![0; a - 1];
         let mut offsets: Vec<usize> = vec![0; a + 1];
-        // let mut block: BitVec = BitVec::from_elem(n + 3, false);
         let mut interval_boundaries = (0..num_intervals).map(|i| i * interval_length)
             .collect::<Vec<usize>>();
         interval_boundaries.push(z);
@@ -61,7 +57,6 @@ fn main() {
             u -= 1;
         }
         let mut v = a;
-        // let mut w = u + 1;
         let mut count = a as i64 - 1 - ((a as i64 * (a as i64 - 1)) >> 1);
         count += ordinary_leaves(n, &mu, &m);
         let initial = (0..interval_length as i32)
@@ -113,9 +108,6 @@ fn main() {
                     let s2primes = special_leaves_type_2(index, here, &mut this, &mut s2b, &mut tt[index],pp);
                     *this.2 += s2primes * phi[index];
                 }
-                // else if interval == 0b0 && index < a - 1 {
-                //         continue 'bar;
-                // } 
                 else if index == a {
                     let p2_var: P2Vars = (&mut u, v);
                     (p2primes,v) = p2(here, this, p2_var, &big_primes, a,);

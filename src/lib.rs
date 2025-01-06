@@ -84,13 +84,6 @@ pub fn initialize_arrays(
         }
         pi[(i+1)>>1] = pix;
     }
-    // for (i, elem) in mu.iter().enumerate().dropping(2) {
-    //     if *elem == 1 - 2 * i as isize {
-    //         pix += 1;
-    //         // big_primes[pix] = 2 * i - 1;
-    //     }
-    //     pi[i] = pix;
-    // }
     //println!("{:?}",mu) ;
     pix
 }
@@ -222,49 +215,6 @@ pub fn prime_table(size: &str) -> Vec<i32> // size "2" to "9"// or "2e9"
     }
     pvec
 }
-// pub fn is_prime(x: i32,pp: &[i32]) -> Result<bool, &'static str> {
-    // if x < 2 {
-    //     return Ok(false);
-    // }
-    // let mut exp = u32::from(decimal_digits(x as u128));
-    // if exp == 1 {exp += 1;}
-    // println!("exp = {}", exp);
-    // let pp : Vec<i32> = prime_table(&exp.to_string());
-    // let pp: Vec<i32> = simple_sieve((10_u64).pow(exp));
-    // let lim = 10i32.pow(9); // pp[pp.len() - 1] + 2;
-    // println!("lim = {:?}",lim );
-    // if x > lim {
-    //     println!("key = {}, lim = {}",x,lim);
-    //     return Err("key too big for is_prime");
-    // }
-    // let (mut lower, mut upper) = (0, pp.len() - 1);
-    // let mut middle;
-    // while lower < upper {
-    //     middle = (lower + upper) >> 1;
-    //     if pp[middle] < x {
-    //         lower = middle + 1;
-    //     } else {
-    //         upper = middle;
-    //     }
-    // }
-//     match pp.binary_search(&x) {
-//         Ok(_) => Ok(true),
-//        Err(_) => Ok(false)
-//     }
-// }
-// #[inline]
-// pub fn sieve2(begin: usize, finish: usize, primes: &[usize], block: &mut BitVec) {
-//     block.clear();
-//     let mut i = 1;
-//     while primes[i] * primes[i] <= finish {
-//         let mut offset = (1 - begin as i64).rem_euclid(primes[i] as i64) as usize;
-//         while offset <=1 + (finish - begin) {
-//             block.set(offset, true);
-//             offset += primes[i];
-//         }
-//         i += 1;
-//     }
-// }
 
 #[inline]
 pub fn p2(
@@ -277,14 +227,8 @@ pub fn p2(
 ) -> (u32, usize) {
     let mut p2primes = 0;
     while *p2_var.0 > reg_var.1 as i32{
-       /* if *p2_var.0 < p2_var.2 {
-            p2_var.2 = cmp::max(2, *p2_var.0 - reg_var.1);
-            // sieve2(p2_var.2, *p2_var.0 /*+ 1*/, primes, block);
-        }*/
         match primes.binary_search(&p2_var.0 ) {
-            Ok(_) => //Ok(true),
-        // if is_prime(*p2_var.0 as i32,primes).expect("problem in is_prime") {
-        // if !block[*p2_var.0 - p2_var.2 + 1] {
+            Ok(_) => 
                 {
                     let y = (reg_var.0 / (*p2_var.0 as u64)) as usize;
                     if y < intervals.1[intervals.0 + 1] {
@@ -296,9 +240,8 @@ pub fn p2(
                         break;
                     }
                 },
-            Err(_) =>{},// Ok(false)
+            Err(_) =>{},
         };
-        // };
         *p2_var.0 -= 2;
 }
      (p2primes, p2_var.1)
