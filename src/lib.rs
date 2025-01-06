@@ -1,16 +1,16 @@
-use bit_vec::BitVec;
+// use bit_vec::BitVec;
 // use std::cmp;
 use std::io;
 use std::fs::File;
 use std::io::prelude::{ Read};
 use std::io::{BufReader};
 use std::path::Path;
-use itertools::Itertools;
+// use itertools::Itertools;
 const SIGNBIT: i32 = 1 << 31;
 type Intervals<'a> = (usize, &'a [usize], usize);
 type RegVars<'a> = (u64, usize, &'a mut i64, &'a [i32]);
 type P2Vars<'a> = (&'a mut i32, usize);
-type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [usize]);
+type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [i32]);
 
 pub fn int_sqrt(n: usize) -> usize {
     (n as f64).sqrt().floor() as usize
@@ -49,12 +49,12 @@ pub fn initialize_arrays(
     ll: usize,
     mu: &mut [isize],
     pi: &mut [usize],
-    big_primes: &mut [usize],
+    big_primes: &[i32],
 ) -> usize {
     for j in 2..mu.len() {
         if mu[j] == 1 {
             let mut i = j;
-            while i <= ll {
+            while i <= ll +1 {
                 mu[i] = match mu[i] {
                     1 => 1 - 2 * j as isize,
                     _ => -mu[i],
@@ -64,25 +64,33 @@ pub fn initialize_arrays(
         }
     }
     let mut j = 2;
-    while j * j <= ll << 1 {
+    while j * j <= (ll+1) << 1 {
         if mu[j] == 1 - 2 * j as isize {
             let mut i = 2 * j * j - 2 * j + 1;
-            while i <= ll {
+            while i <= ll +1 {
                 mu[i] = 0;
                 i += 4 * j * j - 4 * j + 1;
             }
         }
         j += 1;
     }
-    big_primes[1] = 2;
-    let mut pix = 1;
-    for (i, elem) in mu.iter().enumerate().dropping(2) {
-        if *elem == 1 - 2 * i as isize {
-            pix += 1;
-            big_primes[pix] = 2 * i - 1;
+    // big_primes[1] = 2;
+    let mut pix = 0;
+    let mut prime = big_primes[1] as usize;
+    for i  in 2..((ll+1)*2) {
+        if i == prime {
+           pix += 1 ;
+            prime = big_primes[pix+1] as usize;
         }
-        pi[i] = pix;
+        pi[(i+1)>>1] = pix;
     }
+    // for (i, elem) in mu.iter().enumerate().dropping(2) {
+    //     if *elem == 1 - 2 * i as isize {
+    //         pix += 1;
+    //         // big_primes[pix] = 2 * i - 1;
+    //     }
+    //     pi[i] = pix;
+    // }
     //println!("{:?}",mu) ;
     pix
 }
@@ -128,7 +136,7 @@ pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m
 #[inline]
 pub fn special_leaves_type_2(index: usize, intervals: Intervals, reg_var: &mut RegVars, s2b_var: &mut S2bVars, tt_index: &mut u8,pp:u64) -> i64 {
     let mut s2_primes = 0;
-let term2 = int_sqrt((reg_var.0/pp) as usize);
+let term2 = int_sqrt((reg_var.0/pp) as usize) as i32; //careful, not i64
     while *s2b_var.0   > index + 1 {
         let mut y = (reg_var.0 / (pp * s2b_var.2[*s2b_var.0] as u64)) as usize;
         let bit_n = y < reg_var.1;
@@ -263,7 +271,7 @@ pub fn p2(
     intervals: Intervals,
     reg_var: RegVars,
     mut p2_var: P2Vars,
-    _block: &mut BitVec,
+    // _block: &mut BitVec,
     primes: &[i32],
     a: usize,
 ) -> (u32, usize) {

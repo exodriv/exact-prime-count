@@ -1,11 +1,11 @@
-use bit_vec::BitVec;
+// use bit_vec::BitVec;
 use chrono::{DateTime,Local};
 use mysilva::*;
 const SIGNBIT: i32 = 1 << 31;
 type Intervals<'a> = (usize, &'a [usize], usize);
 type RegVars<'a> = (u64, usize, &'a mut i64, &'a [i32]);
 type P2Vars<'a> = (&'a mut i32, usize);
-type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [usize]);
+type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [i32]);
 fn main() {
         let big_primes = prime_table("9");
     'foo: loop {
@@ -21,14 +21,14 @@ fn main() {
         //    return; }
         let mut ll = (n + 1) >> 1;
         if exponent <= 7 {
-            ll = (m as usize - 1) >> 1;
+            ll = (m as usize -1) >> 1;
         }
-        let mut primes = vec![1; ll + 1];
-        let mut mu: Vec<isize> = vec![1; ll + 1];
-        let mut pi: Vec<usize> = vec![0; ll + 1];
-        let pix = initialize_arrays(ll, &mut mu, &mut pi, &mut primes);
-        primes.truncate(pix + 1);
-        // println!("primes = {:?}, mu = {:?}, pi = {:?}", primes,mu,pi);
+        // let mut primes = vec![1; ll + 1];
+        let mut mu: Vec<isize> = vec![1; ll + 2];
+        let mut pi: Vec<usize> = vec![0; ll + 2];
+        let pix = initialize_arrays(ll, &mut mu, &mut pi, &big_primes);
+        // primes.truncate(pix + 1);
+        // println!("mu = {:?}, pi = {:?}", mu,pi);
         if exponent <= 7 {
             println!("prime count = {} ", pix);
             let end: DateTime<Local> = Local::now();
@@ -48,7 +48,7 @@ fn main() {
         let mut tt: Vec<u8> = vec![0; a - 1];
         let mut d2: Vec<usize> = vec![0; a - 1];
         let mut offsets: Vec<usize> = vec![0; a + 1];
-        let mut block: BitVec = BitVec::from_elem(n + 3, false);
+        // let mut block: BitVec = BitVec::from_elem(n + 3, false);
         let mut interval_boundaries = (0..num_intervals).map(|i| i * interval_length)
             .collect::<Vec<usize>>();
         interval_boundaries.push(z);
@@ -74,7 +74,7 @@ fn main() {
                 let here: Intervals = (interval, &interval_boundaries, interval_length);
             let mut counter = initial.clone();
             for index in 0..=a {
-                let pp = if index==a {0} else {primes[index+1] as u64};
+                let pp = if index==a {0} else {big_primes[index+1] as u64};
                 match index {
                     0 => {},
                     _ => {
@@ -88,7 +88,7 @@ fn main() {
                                     pos |= pos + 1;
                                 }
                             }
-                            i += primes[index];
+                            i += big_primes[index] as usize;
                         }
                         offsets[index] = i - interval_length  ;
                     },
@@ -99,7 +99,7 @@ fn main() {
                 }
                 else if index < a - 1
                 {
-                    let mut s2b: S2bVars = (&mut d2[index], &pi, &primes);
+                    let mut s2b: S2bVars = (&mut d2[index], &pi, &big_primes);
                     if here.0 == 0b0 {
                         let term = (m  / (pp * pp )) as usize;
                         *s2b.0 = match term {
@@ -118,7 +118,7 @@ fn main() {
                 // } 
                 else if index == a {
                     let p2_var: P2Vars = (&mut u, v);
-                    (p2primes,v) = p2(here, this, p2_var, &mut block, &big_primes, a,);
+                    (p2primes,v) = p2(here, this, p2_var, &big_primes, a,);
                     count -= phi[index] * p2primes as i64;
                 }
                 phi[index] += (counter[last] & !SIGNBIT) as i64;
