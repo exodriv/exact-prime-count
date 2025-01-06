@@ -4,7 +4,7 @@ use mysilva::*;
 const SIGNBIT: i32 = 1 << 31;
 type Intervals<'a> = (usize, &'a [usize], usize);
 type RegVars<'a> = (u64, usize, &'a mut i64, &'a [i32]);
-type P2Vars<'a> = (&'a mut usize, usize);
+type P2Vars<'a> = (&'a mut i32, usize);
 type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [usize]);
 fn main() {
         let big_primes = prime_table("9");
@@ -54,8 +54,8 @@ fn main() {
         interval_boundaries.push(z);
         // println!("interval_boundaries {:?}", interval_boundaries);
         let mut u = match exponent % 2 {
-            0 => 10usize.pow(exponent / 2) - 1,
-            _ => 10.0_f64.powf(exponent as f64 / 2.0).floor() as usize,
+            0 => 10i32.pow(exponent / 2) - 1,
+            _ => 10.0_f64.powf(exponent as f64 / 2.0).floor() as i32,
         };
         if u % 2 == 0 {
             u -= 1;
