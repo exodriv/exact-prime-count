@@ -104,25 +104,25 @@ pub fn ordinary_leaves(n: usize, mu: &[isize], m: &u64) -> i64 {
 }
 
 #[inline]
-pub fn special_leaves_type_1(b: usize, intervals: Intervals, reg_var: RegVars, m1: &mut [usize], pp: isize, mu: &[isize], phi: &[i64],) {
+pub fn special_leaves_type_1(intervals: Intervals, reg_var: RegVars, m1b: &mut usize, pp: isize, mu: &[isize], phi_b:i64,) {
     // println!("b= {}, phi = {:?}",b,phi);
-    if (m1[b]) % 2 == 0 {
-        m1[b] -= 1;
+    if *m1b % 2 == 0 {
+        *m1b -= 1;
     }
     let criterion = reg_var.1 / pp as usize;
     let mut y;
     let mut mu_value ;
     let mut query;
-    while m1[b] > criterion {
-         mu_value = mu[(m1[b] + 1) >> 1];
+    while *m1b > criterion {
+         mu_value = mu[(*m1b + 1) >> 1];
         if  pp < mu_value.abs()  {
-         y = (reg_var.0 / (m1[b] as u64 * pp as u64)) as usize - intervals.1[intervals.0];
-        if y >= intervals.2/*intervals.1[intervals.0 + 1]*/ { return; } else {
-            query = cnt_query(y /*- intervals.1[intervals.0]*/, reg_var.3) as i64;
-            *reg_var.2 -= mu_value.signum() as i64 * (phi[b] + query );
+         y = (reg_var.0 / (*m1b as u64 * pp as u64)) as usize - intervals.1[intervals.0];
+        if y >= intervals.2 { return; } else {
+            query = cnt_query(y , reg_var.3) as i64;
+            *reg_var.2 -= mu_value.signum() as i64 * (phi_b + query );
         }
     }
-        m1[b] -= 2;
+        *m1b -= 2;
       }
       }
 

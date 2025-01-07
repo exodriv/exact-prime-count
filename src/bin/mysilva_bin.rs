@@ -89,7 +89,7 @@ fn main() {
                 }
                 let mut this: RegVars = (m, n, &mut count, &counter);
                 if index < a_star {
-                    special_leaves_type_1(index, here, this, &mut m1, pp as isize, &mu, &phi);
+                    special_leaves_type_1(here, this, &mut m1[index], pp as isize, &mu, phi[index]);
                 }
                 else if index < a - 1
                 {
