@@ -129,7 +129,7 @@ pub fn special_leaves_type_1(intervals: Intervals, reg_var: RegVars, m1b: &mut u
 #[inline]
 pub fn special_leaves_type_2(index: usize, intervals: Intervals, reg_var: &mut RegVars, s2b_var: &mut S2bVars, tt_index: &mut u8,pp:u64) -> i64 {
     let mut s2_primes = 0;
-let term2 = int_sqrt((reg_var.0/pp) as usize) as i32; //careful, not i64
+let term2 = ((reg_var.0/pp) as f64).sqrt().floor() as i32; //careful, this is not i64
     while *s2b_var.0   > index + 1 {
         let mut y = (reg_var.0 / (pp * s2b_var.2[*s2b_var.0] as u64)) as usize;
         let bit_n = y < reg_var.1;
@@ -139,7 +139,7 @@ let term2 = int_sqrt((reg_var.0/pp) as usize) as i32; //careful, not i64
                     let l = s2b_var.1[(y + 1) >> 1] - index + 1;
                     let term = reg_var.0/(pp * s2b_var.2[index + l] as u64);
                     let d_prime = s2b_var.1[((term + 1) >> 1) as usize];
-                    if s2b_var.2[d_prime + 1] <= term2 // int_sqrt((reg_var.0 /pp /*s2b_var.2[index + 1] as u64*/) as usize)
+                    if s2b_var.2[d_prime + 1] <= term2
                         || d_prime <= index
                     {
                         *tt_index = 1;
@@ -229,7 +229,7 @@ pub fn p2(
     let mut p2primes = 0;
     while *p2_var.0 > reg_var.1 as i32{
         match primes.binary_search(&p2_var.0 ) {
-            Ok(_) => 
+            Ok(_) =>
                 {
                     let y = (reg_var.0 / (*p2_var.0 as u64)) as usize;
                     if y < intervals.1[intervals.0 + 1] {

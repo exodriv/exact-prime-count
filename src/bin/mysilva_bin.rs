@@ -34,7 +34,7 @@ fn main() {
         }
         let a = pi[(n + 1) >> 1];
         let a_star = pi[(int_sqrt(n) + 1) >> 1];
-        // println!("a_star = {:?}", a_star);
+        println!("a_star = {:?}, a= {}", a_star,a);
         let lc = (n as f64).log2().floor() as u8;
         let interval_length = (1 << lc) as usize;
         let last = interval_length - 1;
