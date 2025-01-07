@@ -185,7 +185,8 @@ let term2 = int_sqrt((reg_var.0/pp) as usize) as i32; //careful, not i64
 }
 pub fn prime_table(size: &str) -> Vec<i32> // size "2" to "9"// or "2e9"
 {
-    const LOC: &str = "/home/steve/Developer/projects/binary_files/"; // /media/steve/882F-CE8C/";
+    const LOC: &str = "/tmp/ramdisk/";
+    // const LOC: &str = "/home/steve/Developer/projects/binary_files/"; // /media/steve/882F-CE8C/";
     const FILE_PREFIX :&str= "paspe";
     const FILE_SUFFIX :&str = "gp.bin";
     // const ALT_FILE_PREFIX : &str = "pcp";

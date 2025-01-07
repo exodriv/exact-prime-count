@@ -21,5 +21,3 @@ name = "mysilva_bin"
 [dependencies]
 
 chrono="*"
-#bit-vec="*"
-#itertools="0.14.0"
