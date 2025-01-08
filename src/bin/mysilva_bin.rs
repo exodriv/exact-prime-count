@@ -6,7 +6,8 @@ type RegVars<'a> = (u64, usize, &'a mut i64, &'a [i32]);
 type P2Vars<'a> = (&'a mut i32, usize);
 type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [i32]);
 fn main() {
-        let big_primes = prime_table("9");
+        let big_primes = prime_table("9"); // .clone().into_iter().take(35000000).collect::<Vec<_>>();
+        let primes = big_primes.clone().into_iter().take(4000000).collect::<Vec<_>>();
     'foo: loop {
         let exponent = input();
         let m = 10u64.pow(exponent);
@@ -15,18 +16,20 @@ fn main() {
         let beta = 0.00088;
         let alpha = beta * (exponent as f64 * 10.0_f64.ln()).powi(3);
         let n = (alpha * (m as f64).cbrt() + 0.5).floor() as usize;
+        println!("n= {:?}", n);
         let z = (10.0_f64.powf(exponent as f64 * 2.0 / 3.0) / alpha).floor() as usize + 1;
         //if n > z { println!("adjust beta");
         //    return; }
-        let mut ll = (n + 1) >> 1;
-        if exponent <= 7 {
-            ll = (m as usize -1) >> 1;
-        }
+        let ll = (n + 1) >> 1;
+        // if exponent <= 8 {
+        //     ll = (m as usize -1) >> 1;
+        // }
         let mut mu: Vec<isize> = vec![1; ll + 2];
         let mut pi: Vec<usize> = vec![0; ll + 2];
-        let pix = initialize_arrays(ll, &mut mu, &mut pi, &big_primes);
+        initialize_arrays(ll, &mut mu, &mut pi, &big_primes);
         // println!("mu = {:?}, pi = {:?}", mu,pi);
-        if exponent <= 7 {
+        if exponent <= 9{
+            let pix = big_primes.binary_search(&(m as i32)).unwrap_or_else(|x| x-1);
             println!("prime count = {} ", pix);
             let end: DateTime<Local> = Local::now();
             println!("{:?}", end - start);
@@ -34,7 +37,7 @@ fn main() {
         }
         let a = pi[(n + 1) >> 1];
         let a_star = pi[(int_sqrt(n) + 1) >> 1];
-        // println!("a_star = {:?}, a= {}", a_star,a);
+        println!("a_star = {:?}, a= {}", a_star,a);
         let lc = (n as f64).log2().floor() as u8;
         let interval_length = (1 << lc) as usize;
         let last = interval_length - 1;
@@ -69,7 +72,7 @@ fn main() {
                 let here: Intervals = (interval, &interval_boundaries, interval_length);
             let mut counter = initial.clone();
             for index in 0..=a {
-                let pp = if index==a {0} else {big_primes[index+1] as u64};
+                let pp = if index==a {0} else {primes[index+1] as u64};
                 match index {
                     0 => {},
                     _ => {
@@ -83,7 +86,7 @@ fn main() {
                                     pos |= pos + 1;
                                 }
                             }
-                            i += big_primes[index] as usize;
+                            i += primes[index] as usize;
                         }
                         offsets[index] = i - interval_length  ;
                     },

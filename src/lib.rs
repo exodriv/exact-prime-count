@@ -49,8 +49,8 @@ pub fn initialize_arrays(
     ll: usize,
     mu: &mut [isize],
     pi: &mut [usize],
-    big_primes: &[i32],
-) -> usize {
+    primes: &[i32],
+) {
     for j in 2..mu.len() {
         if mu[j] == 1 {
             let mut i = j;
@@ -74,18 +74,18 @@ pub fn initialize_arrays(
         }
         j += 1;
     }
-    // big_primes[1] = 2;
+    // primes[1] = 2;
     let mut pix = 0;
-    let mut prime = big_primes[1] as usize;
+    let mut prime = primes[1] as usize;
     for i  in 2..((ll+1)*2) {
         if i == prime {
            pix += 1 ;
-            prime = big_primes[pix+1] as usize;
+            prime = primes[pix+1] as usize;
         }
         pi[(i+1)>>1] = pix;
     }
     //println!("{:?}",mu) ;
-    pix
+    // pix
 }
 
 pub fn ordinary_leaves(n: usize, mu: &[isize], m: &u64) -> i64 {
