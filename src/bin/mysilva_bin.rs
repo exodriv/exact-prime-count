@@ -34,11 +34,12 @@ fn main() {
         }
         let a = pi[(n + 1) >> 1];
         let a_star = pi[(int_sqrt(n) + 1) >> 1];
-        println!("a_star = {:?}, a= {}", a_star,a);
+        // println!("a_star = {:?}, a= {}", a_star,a);
         let lc = (n as f64).log2().floor() as u8;
         let interval_length = (1 << lc) as usize;
         let last = interval_length - 1;
         let num_intervals = (z / interval_length) + 1;
+        println!("number of intervals = {}", num_intervals);
         let mut m1: Vec<usize> = vec![n; a_star + 1];
         let mut phi: Vec<i64> = vec![0; a + 1];
         phi[0]=-1;

@@ -17,7 +17,7 @@ pub fn int_sqrt(n: usize) -> usize {
 }
 
 #[inline]
-pub fn cnt_query(mut pos: usize, counter: &[i32]) -> u32 {
+pub fn cnt_query(mut pos: usize, counter: &[i32]) -> i64 {
     let mut acc = counter[pos] & !SIGNBIT;
     pos += 1;
     pos &= pos - 1;
@@ -25,7 +25,7 @@ pub fn cnt_query(mut pos: usize, counter: &[i32]) -> u32 {
         acc += counter[pos - 1] & !SIGNBIT;
         pos &= pos - 1;
     }
-    acc as u32
+    i64::from(acc)
 }
 
 pub fn input() -> u32 {
@@ -118,7 +118,7 @@ pub fn special_leaves_type_1(intervals: Intervals, reg_var: RegVars, m1b: &mut u
         if  pp < mu_value.abs()  {
          y = (reg_var.0 / (*m1b as u64 * pp as u64)) as usize - intervals.1[intervals.0];
         if y >= intervals.2 { return; } else {
-            query = cnt_query(y , reg_var.3) as i64;
+            query = cnt_query(y , reg_var.3);
             *reg_var.2 -= mu_value.signum() as i64 * (phi_b + query );
         }
     }
@@ -170,7 +170,7 @@ let term2 = ((reg_var.0/pp) as f64).sqrt().floor() as i32; //careful, this is no
              y -= intervals.1[intervals.0];
             if y < intervals.2
                 {
-                    *reg_var.2 += cnt_query(y, reg_var.3) as i64;
+                    *reg_var.2 += cnt_query(y, reg_var.3) ;
                     *s2b_var.0 -= 1;
                     s2_primes += 1;
                 }
@@ -211,7 +211,7 @@ pub fn prime_table(size: &str) -> Vec<i32> // size "2" to "9"// or "2e9"
     ff.read_to_end(&mut buf).unwrap();
     let mut prime = 3;
     for i in buf {
-        prime += 2 * i as i32;
+        prime += 2 * i32::from(i);
         pvec.push(prime);
     }
     pvec
