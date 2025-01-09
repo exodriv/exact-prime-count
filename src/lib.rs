@@ -1,4 +1,4 @@
-#![feature(isqrt)]
+// #![feature(isqrt)]
 use std::io;
 use std::fs::File;
 use std::io::prelude::{ Read};
@@ -73,7 +73,6 @@ pub fn initialize_arrays(
         }
         j += 1;
     }
-    // primes[1] = 2;
     let mut pix = 0;
     let mut prime = primes[1] as usize;
     for i  in 2..((ll+1)*2) {
@@ -83,8 +82,6 @@ pub fn initialize_arrays(
         }
         pi[(i+1)>>1] = pix;
     }
-    //println!("{:?}",mu) ;
-    // pix
 }
 
 pub fn ordinary_leaves(n: usize, mu: &[isize], m: &u64) -> i64 {

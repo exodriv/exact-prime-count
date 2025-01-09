@@ -1,4 +1,5 @@
 use chrono::{DateTime,Local};
+use rayon::prelude::*;
 use mysilva::*;
 const SIGNBIT: i32 = 1 << 31;
 type Intervals<'a> = (usize, &'a [usize], usize);
@@ -6,8 +7,8 @@ type RegVars<'a> = (u64, usize, &'a mut i64, &'a [i32]);
 type P2Vars<'a> = (&'a mut i32, usize);
 type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [i32]);
 fn main() {
-        let big_primes = prime_table("9"); // .clone().into_iter().take(35000000).collect::<Vec<_>>();
-        let primes = big_primes.clone().into_iter().take(4000000).collect::<Vec<_>>();
+        let big_primes = prime_table("9"); 
+    let primes = big_primes.clone().into_par_iter().take(4000000).collect::<Vec<_>>();
     'foo: loop {
         let exponent = input();
         let m = 10u64.pow(exponent);

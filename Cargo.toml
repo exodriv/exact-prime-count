@@ -21,3 +21,4 @@ name = "mysilva_bin"
 [dependencies]
 
 chrono="*"
+rayon = "*"
