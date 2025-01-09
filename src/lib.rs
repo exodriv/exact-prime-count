@@ -1,5 +1,4 @@
-// use bit_vec::BitVec;
-// use std::cmp;
+#![feature(isqrt)]
 use std::io;
 use std::fs::File;
 use std::io::prelude::{ Read};
@@ -12,9 +11,9 @@ type RegVars<'a> = (u64, usize, &'a mut i64, &'a [i32]);
 type P2Vars<'a> = (&'a mut i32, usize);
 type S2bVars<'a> = (&'a mut usize, &'a [usize], &'a [i32]);
 
-pub fn int_sqrt(n: usize) -> usize {
-    (n as f64).sqrt().floor() as usize
-}
+// pub fn int_sqrt(n: usize) -> usize {
+//     (n as f64).sqrt().floor() as usize
+// }
 
 #[inline]
 pub fn cnt_query(mut pos: usize, counter: &[i32]) -> i64 {
@@ -129,7 +128,7 @@ pub fn special_leaves_type_1(intervals: Intervals, reg_var: RegVars, m1b: &mut u
 #[inline]
 pub fn special_leaves_type_2(index: usize, intervals: Intervals, reg_var: &mut RegVars, s2b_var: &mut S2bVars, tt_index: &mut u8,pp:u64) -> i64 {
     let mut s2_primes = 0;
-let term2 = ((reg_var.0/pp) as f64).sqrt().floor() as i32; //careful, this is not i64
+let term2 = (reg_var.0/pp).isqrt() as i32; //careful, this is not i64
     while *s2b_var.0   > index + 1 {
         let mut y = (reg_var.0 / (pp * s2b_var.2[*s2b_var.0] as u64)) as usize;
         let bit_n = y < reg_var.1;

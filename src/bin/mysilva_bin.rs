@@ -26,9 +26,9 @@ fn main() {
         // }
         let mut mu: Vec<isize> = vec![1; ll + 2];
         let mut pi: Vec<usize> = vec![0; ll + 2];
-        initialize_arrays(ll, &mut mu, &mut pi, &big_primes);
+        initialize_arrays(ll, &mut mu, &mut pi, &primes);
         // println!("mu = {:?}, pi = {:?}", mu,pi);
-        if exponent <= 9{
+        if exponent <= 9 {
             let pix = big_primes.binary_search(&(m as i32)).unwrap_or_else(|x| x-1);
             println!("prime count = {} ", pix);
             let end: DateTime<Local> = Local::now();
@@ -36,9 +36,9 @@ fn main() {
             continue;
         }
         let a = pi[(n + 1) >> 1];
-        let a_star = pi[(int_sqrt(n) + 1) >> 1];
+        let a_star = pi[(n.isqrt() + 1) >> 1];
         println!("a_star = {:?}, a= {}", a_star,a);
-        let lc = (n as f64).log2().floor() as u8;
+        let lc = (n as u64).ilog2() as u8;
         let interval_length = (1 << lc) as usize;
         let last = interval_length - 1;
         let num_intervals = (z / interval_length) + 1;
